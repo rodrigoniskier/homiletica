@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilética: Da Pesquisa ao Púlpito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Scribe's Parchment -->
+    <!-- Application Structure Plan: The application is designed as a 'Preacher's Pathway', a step-by-step interactive guide through the process of sermon preparation. A fixed sidebar navigation represents the stages of the journey, from foundational understanding to final delivery. Users click a stage to view its detailed content in the main panel. This linear, yet interactive, structure was chosen because the source material describes a sequential process. It breaks down dense text into manageable, thematic sections, making the information easy to digest and follow, and keeps the overall process map constantly visible to the user for context and orientation. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Entire textual guide to homiletics. Goal: Organize & Inform. Viz/Presentation: Interactive step-by-step navigation sidebar (HTML/CSS/JS) acting as a process flow diagram. Each step reveals a formatted text block (HTML). Interaction: User clicks a step in the sidebar to display the corresponding content. Justification: This transforms a long document into an engaging, explorable learning path, directly mirroring the procedural nature of the content without needing charts for non-existent quantitative data. Library/Method: Vanilla JS for interactivity, Tailwind CSS for layout.
+        - Report Info: Section-specific principles and lists (e.g., 'Vantagens', 'Cuidados'). Goal: Inform. Viz/Presentation: Styled HTML lists (`<ul>`, `<li>`) within each text block. Interaction: Part of the static content displayed on section selection. Justification: Standard lists are the clearest way to present this information, maintaining readability. Library/Method: HTML.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lato:wght@400;700&display=swap');
+        body {
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #app {
+            flex-grow: 1;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Merriweather', serif;
+        }
+        .content-transition {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .nav-item.active {
+            background-color: #fcd34d;
+            color: #78350f;
+            font-weight: bold;
+        }
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+        .nav-icon {
+            transition: transform 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800">
+
+    <div id="app" class="min-h-screen">
+        <header class="bg-amber-800 text-amber-50 p-6 shadow-lg">
+            <div class="container mx-auto text-center">
+                <h1 class="text-3xl md:text-4xl font-bold">Homilética: Da Pesquisa ao Púlpito</h1>
+                <p class="mt-2 text-amber-200">Um guia interativo baseado na obra de Jilton Moraes</p>
+            </div>
+        </header>
+
+        <div class="container mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
+            <aside class="w-full md:w-1/4 lg:w-1/5">
+                <nav id="main-nav" class="bg-white p-4 rounded-lg shadow-md sticky top-8">
+                    <h3 class="font-bold text-lg text-amber-900 border-b-2 border-amber-200 pb-2 mb-4">A Jornada do Pregador</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="compreender"><span class="nav-icon text-xl">💡</span> Compreender a Tarefa</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="antes"><span class="nav-icon text-xl">🙏</span> Antes de Tudo</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ideia"><span class="nav-icon text-xl">🌱</span> Uma Ideia a Comunicar</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="base"><span class="nav-icon text-xl">📖</span> A Base Sólida</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="interpretar"><span class="nav-icon text-xl">🔍</span> Considerar o Texto</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="contextualizar"><span class="nav-icon text-xl">🗣️</span> Contextualizar</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="proposito"><span class="nav-icon text-xl">🎯</span> Definir o Propósito</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="titulo"><span class="nav-icon text-xl">🏷️</span> O Título</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="dividir"><span class="nav-icon text-xl">🧩</span> Dividir para Pregar</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ilustrar"><span class="nav-icon text-xl">🖼️</span> Ilustrações</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ouvinte"><span class="nav-icon text-xl">👂</span> Falar ao Ouvinte</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="conquistar"><span class="nav-icon text-xl">🌟</span> A Introdução</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="final"><span class="nav-icon text-xl">🏁</span> A Conclusão</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="preparo"><span class="nav-icon text-xl">🛡️</span> Preparo Final</a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="pulpito"><span class="nav-icon text-xl">🎤</span> No Púlpito</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main id="content-area" class="w-full md:w-3/4 lg:w-4/5 bg-white p-6 sm:p-8 rounded-lg shadow-md">
+                
+                <section id="compreender" class="content-section space-y-4">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">💡 Para Compreender a Tarefa</h2>
+                    <p class="text-lg text-stone-600">Esta primeira seção estabelece as bases. Aqui, exploramos o que é a homilética, por que ela é fundamental para a vida da igreja e quais são as responsabilidades e os cuidados que todo pregador deve ter. Compreender esta tarefa é o primeiro passo para uma pregação fiel e eficaz.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">O que é Homilética?</h3>
+                    <p>Homilética é tanto ciência quanto arte. Como ciência, dedica-se ao estudo dos fundamentos e métodos da pregação cristã. Como arte, trata do processo criativo, passo a passo, para construir sermões eficazes. A palavra tem origem no termo grego para “conversação”, mas passou a designar o discurso religioso, estruturado para comunicar verdades espirituais de maneira clara e relevante.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que a pregação é central?</h3>
+                    <p>A pregação ocupa o centro da vida da igreja cristã. Desde o Antigo Testamento até os dias atuais, a proclamação da Palavra de Deus é o principal meio pelo qual Deus fala ao seu povo, ensina, corrige, consola e salva. Jesus mesmo fez da pregação o núcleo de seu ministério. Da mesma forma, a igreja e seus líderes devem valorizar e priorizar o púlpito como espaço privilegiado de ensino, evangelização e edificação.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Vantagens do estudo da homilética</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><b>Conscientização da missão:</b> O pregador deve reconhecer seu papel como porta-voz do Senhor e depender inteiramente de Deus.</li>
+                        <li><b>Elaboração de bons sermões:</b> Quanto mais preparo, maior será a clareza, a objetividade e a força do sermão.</li>
+                        <li><b>Equilíbrio entre forma e conteúdo:</b> Sermões eficazes unem linguagem bem trabalhada e verdades profundas.</li>
+                        <li><b>Aprimoramento do desempenho:</b> O sucesso da exposição pública depende do tempo dedicado ao preparo particular.</li>
+                        <li><b>Interdisciplinaridade:</b> Dialoga com áreas como hermenêutica, teologia, psicologia e comunicação.</li>
+                        <li><b>Crescimento pessoal:</b> Exige uma vida piedosa, ética e consagrada. Pregar é viver o que se comunica.</li>
+                    </ul>
+                </section>
+
+                <section id="antes" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🙏 Antes de Tudo: O Preparo Espiritual</h2>
+                    <p class="text-lg text-stone-600">Antes de abrir os livros, o pregador deve se abrir para Deus. Esta seção aborda o aspecto mais crucial da preparação: a vida espiritual. A autenticidade da mensagem nasce da comunhão com o Autor da Palavra. Exploraremos a importância da oração, da humildade e da dependência de Deus como a verdadeira fonte de poder para a pregação.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A prioridade do preparo espiritual</h3>
+                    <p>Antes de qualquer preparação técnica ou mesmo do estudo bíblico para a elaboração de sermões, o primeiro passo do pregador deve ser o preparo espiritual. Este preparo não é apenas importante, mas fundamental: só é possível pregar autenticamente quando se vive em comunhão real com Deus. Falar em nome de Deus exige que o pregador esteja, antes de tudo, diante d’Ele, buscando Sua direção e Seu poder.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Reconhecimento das limitações humanas</h3>
+                    <p>Todo pregador, ao refletir sobre o peso da responsabilidade de comunicar a Palavra, percebe suas próprias limitações e fragilidades. Reconhecer isso não é fraqueza, mas sinal de maturidade. A verdadeira capacidade para pregar não está na autossuficiência, mas na dependência do Senhor. Deus usa pessoas comuns, conscientes de suas fraquezas, mas entregues totalmente a Ele.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Vida de comunhão e piedade</h3>
+                    <p>O impacto do sermão está profundamente ligado à vida de comunhão do pregador com Deus. O pregador precisa cultivar uma vida de oração, adoração e busca constante pela presença do Senhor. Uma vida piedosa resulta em mensagens autênticas, cheias de graça e verdade, que falam ao coração dos ouvintes.</p>
+                </section>
+
+                <section id="ideia" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🌱 Uma Ideia a Comunicar</h2>
+                    <p class="text-lg text-stone-600">Todo sermão poderoso nasce de uma única e clara ideia central. Esta seção explora como encontrar e cultivar essa semente. Veremos onde buscar inspiração – na Bíblia, na vida, nas necessidades do povo – e como manter a criatividade para que a mensagem seja sempre relevante e transformadora.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A importância da ideia central</h3>
+                    <p>A ideia central é o “embrião” do sermão: é dela que tudo se desenvolve. Essa ideia dá unidade à mensagem, orienta a seleção dos textos bíblicos, das ilustrações, das aplicações e mantém o foco do pregador. Sem clareza sobre o que se deseja comunicar, o sermão se torna vago e disperso, perdendo poder de transformação.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Onde encontrar ideias para a pregação</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><b>Na Bíblia:</b> A principal e inesgotável fonte de ideias.</li>
+                        <li><b>Em livros e leituras cristãs:</b> Obras teológicas e devocionais oferecem novas perspectivas.</li>
+                        <li><b>Na vida diária e nas notícias:</b> Fatos cotidianos podem ilustrar ou contextualizar a mensagem.</li>
+                        <li><b>Nas experiências pessoais e da comunidade:</b> Histórias de vida enriquecem e tornam a mensagem próxima.</li>
+                        <li><b>Nas necessidades do povo:</b> A escuta atenta revela temas urgentes e atuais.</li>
+                        <li><b>Ao ouvir outros pregadores:</b> Podem inspirar novas ideias, sem recorrer à mera imitação.</li>
+                    </ul>
+                </section>
+
+                <section id="base" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">📖 A Base Sólida da Pregação</h2>
+                    <p class="text-lg text-stone-600">Uma mensagem sem fundamento bíblico é apenas um discurso. Nesta seção, reforçamos a verdade de que toda pregação autêntica deve estar firmemente ancorada na Palavra de Deus. Abordaremos os elementos essenciais que garantem essa base sólida: interpretação fiel, aplicação prática e um desafio claro para os ouvintes.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A pregação fundamentada</h3>
+                    <p>A pregação cristã autêntica só tem valor quando está fundamentada na Palavra de Deus. Não basta apresentar reflexões, opiniões pessoais ou apenas mensagens de ânimo. A verdadeira pregação é a comunicação da revelação bíblica, sempre com aplicação para o presente e desafios para o futuro.</p>
+                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">Elementos essenciais da pregação</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><b>Interpretação fiel das Escrituras:</b> Todo sermão começa com uma compreensão correta do texto bíblico.</li>
+                        <li><b>Aplicação prática:</b> A pregação precisa responder à pergunta: “O que Deus quer que façamos com esta mensagem?”</li>
+                        <li><b>Desafio para o futuro:</b> A pregação deve inspirar, encorajar e desafiar os ouvintes a uma nova postura.</li>
+                    </ul>
+                </section>
+
+                <section id="interpretar" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🔍 Considere o que diz o texto</h2>
+                    <p class="text-lg text-stone-600">Interpretar corretamente é a responsabilidade central do pregador. Aqui, mergulhamos nos princípios da hermenêutica: como estudar o contexto, analisar o significado das palavras e identificar a ideia central do texto bíblico, evitando os perigos de interpretações apressadas ou subjetivas.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Como interpretar corretamente?</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><b>Estudo do contexto:</b> Compreenda o ambiente histórico, cultural, literário e teológico do texto.</li>
+                        <li><b>Análise do significado das palavras e frases:</b> Observe cuidadosamente os termos-chave e construções gramaticais.</li>
+                        <li><b>Leitura comparada:</b> Considere versões diferentes da Bíblia e consulte comentários e dicionários.</li>
+                        <li><b>Identificação da ideia central:</b> Descubra a principal verdade do texto, evitando distorções.</li>
+                    </ul>
+                </section>
+
+                <section id="contextualizar" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🗣️ O que o pregador vai falar? A Contextualização</h2>
+                    <p class="text-lg text-stone-600">Depois de entender o texto, é preciso traduzi-lo para o hoje. Contextualizar é construir uma ponte entre o mundo bíblico e a realidade dos ouvintes. Esta seção ensina como conhecer o público, identificar suas necessidades e adaptar a linguagem para que a Palavra fale de maneira viva e relevante.</p>
+                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">O que significa contextualizar?</h3>
+                    <p>Significa aplicar o sentido do texto à situação presente dos ouvintes, traduzir conceitos bíblicos para a linguagem e os dilemas de hoje, e ajudar a congregação a perceber que a Palavra de Deus fala de maneira viva para seus próprios desafios.</p>
+                </section>
+
+                <section id="proposito" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🎯 Onde Chegaremos? Definindo o Propósito</h2>
+                    <p class="text-lg text-stone-600">Um sermão sem propósito é uma viagem sem destino. É fundamental saber o que se quer alcançar com a mensagem. Aqui, aprendemos a definir o propósito básico (instruir, consolar, etc.) e o específico (o que se espera que o ouvinte faça, sinta ou pense), garantindo foco e objetividade.</p>
+                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que definir o propósito?</h3>
+                    <p>Ele direciona a seleção dos conteúdos, evita dispersão e garante objetividade. Permite que o pregador e os ouvintes saibam para onde a mensagem está caminhando, facilitando a compreensão e a aplicação.</p>
+                </section>
+
+                <section id="titulo" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🏷️ O menor resumo: O Título</h2>
+                     <p class="text-lg text-stone-600">O título é a porta de entrada para o sermão. Um bom título resume a mensagem, desperta o interesse e ajuda na memorização. Nesta seção, exploramos as características de um título eficaz: clareza, fidelidade ao conteúdo e atratividade.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Características de um bom título</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><b>Clareza:</b> Deve ser facilmente compreendido.</li>
+                        <li><b>Fidelidade ao conteúdo:</b> Deve expressar fielmente a ideia central da pregação.</li>
+                        <li><b>Atratividade:</b> Deve despertar interesse e preparar o coração dos ouvintes.</li>
+                    </ul>
+                </section>
+
+                <section id="dividir" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🧩 Dividir bem para pregar melhor</h2>
+                    <p class="text-lg text-stone-600">A estrutura é o esqueleto do sermão. Uma mensagem bem dividida é mais fácil de acompanhar, entender e reter. Aqui, vemos como organizar o conteúdo em tópicos lógicos e sequenciais, criando um roteiro claro que guia tanto o pregador quanto o ouvinte.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que dividir o sermão?</h3>
+                    <p>A divisão facilita a argumentação lógica, ajuda o ouvinte a acompanhar o raciocínio e organiza o pensamento do pregador, evitando dispersão e esquecimentos durante a exposição.</p>
+                </section>
+
+                <section id="ilustrar" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🖼️ Uma casa com janelas: O Poder das Ilustrações</h2>
+                    <p class="text-lg text-stone-600">Ilustrações são as janelas do sermão, permitindo que a luz da verdade ilumine a vida cotidiana. Seguindo o modelo de Jesus e suas parábolas, esta seção ensina como usar histórias e exemplos para tornar a mensagem mais vívida, compreensível e inesquecível.</p>
+                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que ilustrar?</h3>
+                    <p>Ilustrações tornam a mensagem vívida, despertam interesse e atenção, e criam pontes entre o texto bíblico e a vida real dos ouvintes. Elas ajudam na aplicação prática, pois permitem que o ouvinte se veja na situação apresentada.</p>
+                </section>
+
+                <section id="ouvinte" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">👂 A boa mensagem fala ao ouvinte</h2>
+                    <p class="text-lg text-stone-600">A comunicação só é eficaz quando alcança o destinatário. O foco, portanto, deve estar no ouvinte. Nesta seção, aprendemos a importância de conhecer o público, abordar suas questões reais e conectar a verdade bíblica à sua experiência, promovendo uma transformação concreta.</p>
+                </section>
+
+                <section id="conquistar" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🌟 É preciso conquistar o ouvinte: A Introdução</h2>
+                    <p class="text-lg text-stone-600">Os primeiros minutos são decisivos. Uma introdução forte e envolvente captura a atenção e prepara o terreno para a mensagem. Veremos como criar aberturas criativas e relevantes que mostrem imediatamente ao público por que vale a pena ouvir.</p>
+                </section>
+                
+                <section id="final" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🏁 Afinal, o final: A Conclusão</h2>
+                     <p class="text-lg text-stone-600">Saber como terminar é tão importante quanto saber como começar. Um bom encerramento sintetiza a mensagem, reforça o ponto central e apela a uma decisão. Esta seção mostra como concluir com clareza, propósito e impacto, para que o sermão provoque transformação.</p>
+                </section>
+
+                <section id="preparo" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🛡️ Antes de assomar ao púlpito: O Preparo Final</h2>
+                    <p class="text-lg text-stone-600">Momentos antes da pregação, o preparo continua. Trata-se de cuidar das dimensões espiritual, emocional, mental e física. É um tempo para oração, revisão final e entrega, garantindo que o pregador suba ao púlpito com humildade, segurança e dependência de Deus.</p>
+                </section>
+
+                <section id="pulpito" class="content-section space-y-4 hidden">
+                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🎤 No púlpito: O Momento da Exposição</h2>
+                    <p class="text-lg text-stone-600">Este é o momento culminante, onde todo o preparo se concretiza. No púlpito, o pregador deve ter domínio do conteúdo, comunicar-se de forma integral (com voz, gestos e olhar), ter sensibilidade para com o público e manter-se em espírito de oração, como um instrumento fiel nas mãos de Deus.</p>
+                </section>
+
+            </main>
+        </div>
+    </div>
+    
+    <footer class="bg-amber-800 text-amber-200 text-center p-4">
+        <p>Desenvolvido por Rodrigo Niskier, Gemini e ChatGPT.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nav = document.getElementById('main-nav');
+            const navItems = nav.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function updateContent(sectionId) {
+                contentSections.forEach(section => {
+                    section.classList.add('hidden', 'opacity-0');
+                });
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                const activeSection = document.getElementById(sectionId);
+                const activeNavItem = nav.querySelector(`[data-section="${sectionId}"]`);
+
+                if (activeSection) {
+                    activeSection.classList.remove('hidden');
+                    setTimeout(() => activeSection.classList.remove('opacity-0'), 50);
+                }
+                if (activeNavItem) {
+                    activeNavItem.classList.add('active');
+                }
+            }
+            
+            nav.addEventListener('click', function(event) {
+                event.preventDefault();
+                const target = event.target.closest('.nav-item');
+                if (target) {
+                    const sectionId = target.dataset.section;
+                    updateContent(sectionId);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            updateContent('compreender');
+        });
+    </script>
+</body>
+</html>
