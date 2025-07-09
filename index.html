@@ -1,262 +1,1439 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homilética: Da Pesquisa ao Púlpito</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Scribe's Parchment -->
-    <!-- Application Structure Plan: The application is designed as a 'Preacher's Pathway', a step-by-step interactive guide through the process of sermon preparation. A fixed sidebar navigation represents the stages of the journey, from foundational understanding to final delivery. Users click a stage to view its detailed content in the main panel. This linear, yet interactive, structure was chosen because the source material describes a sequential process. It breaks down dense text into manageable, thematic sections, making the information easy to digest and follow, and keeps the overall process map constantly visible to the user for context and orientation. -->
-    <!-- Visualization & Content Choices:
-        - Report Info: Entire textual guide to homiletics. Goal: Organize & Inform. Viz/Presentation: Interactive step-by-step navigation sidebar (HTML/CSS/JS) acting as a process flow diagram. Each step reveals a formatted text block (HTML). Interaction: User clicks a step in the sidebar to display the corresponding content. Justification: This transforms a long document into an engaging, explorable learning path, directly mirroring the procedural nature of the content without needing charts for non-existent quantitative data. Library/Method: Vanilla JS for interactivity, Tailwind CSS for layout.
-        - Report Info: Section-specific principles and lists (e.g., 'Vantagens', 'Cuidados'). Goal: Inform. Viz/Presentation: Styled HTML lists (`<ul>`, `<li>`) within each text block. Interaction: Part of the static content displayed on section selection. Justification: Standard lists are the clearest way to present this information, maintaining readability. Library/Method: HTML.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lato:wght@400;700&display=swap');
-        body {
-            font-family: 'Lato', sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .serif-font {
+            font-family: 'Crimson Text', serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F59E0B 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .flashcard {
+            perspective: 1000px;
+        }
+        
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
         }
-        #app {
-            flex-grow: 1;
+        
+        .flashcard-back {
+            transform: rotateY(180deg);
         }
-        h1, h2, h3, h4 {
-            font-family: 'Merriweather', serif;
+        
+        .progress-bar {
+            transition: width 0.3s ease;
         }
-        .content-transition {
-            transition: opacity 0.5s ease-in-out;
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #FDE047 0%, #FACC15 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.2em;
+            background-position: 0 88%;
+            transition: background-size 0.25s ease-in;
+        }
+        
+        .highlight:hover {
+            background-size: 100% 100%;
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .accordion-content.active {
+            max-height: 1000px;
+        }
+        
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+        
+        .quiz-option:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .quiz-option.correct {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+        }
+        
+        .quiz-option.incorrect {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
         .nav-item.active {
-            background-color: #fcd34d;
-            color: #78350f;
-            font-weight: bold;
+            background-color: #f3f4f6;
+            color: #8B5CF6 !important;
         }
-        .nav-item.active .nav-icon {
-            transform: scale(1.1);
+        
+        .dark .nav-item.active {
+            background-color: #374151;
+            color: #a78bfa !important;
         }
-        .nav-icon {
-            transition: transform 0.2s ease;
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #8B5CF6;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .step-btn {
+            padding: 8px 16px;
+            background-color: #e5e7eb;
+            color: #6b7280;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .step-btn:hover {
+            background-color: #d1d5db;
+        }
+        
+        .step-btn.active {
+            background-color: #8B5CF6;
+            color: white;
+        }
+        
+        .dark .step-btn {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+        
+        .dark .step-btn:hover {
+            background-color: #4b5563;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B5CF6',
+                        secondary: '#EC4899',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-amber-50 text-stone-800">
-
-    <div id="app" class="min-h-screen">
-        <header class="bg-amber-800 text-amber-50 p-6 shadow-lg">
-            <div class="container mx-auto text-center">
-                <h1 class="text-3xl md:text-4xl font-bold">Homilética: Da Pesquisa ao Púlpito</h1>
-                <p class="mt-2 text-amber-200">Um guia interativo baseado na obra de Jilton Moraes</p>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold text-primary serif-font">Homilética: Da Pesquisa ao Púlpito</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="progress-container bg-gray-200 dark:bg-gray-700 rounded-full h-2 w-32">
+                        <div class="progress-bar bg-gradient-to-r from-primary via-secondary to-accent h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                    <button id="menuToggle" class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
-        </header>
-
-        <div class="container mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
-            <aside class="w-full md:w-1/4 lg:w-1/5">
-                <nav id="main-nav" class="bg-white p-4 rounded-lg shadow-md sticky top-8">
-                    <h3 class="font-bold text-lg text-amber-900 border-b-2 border-amber-200 pb-2 mb-4">A Jornada do Pregador</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="compreender"><span class="nav-icon text-xl">💡</span> Compreender a Tarefa</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="antes"><span class="nav-icon text-xl">🙏</span> Antes de Tudo</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ideia"><span class="nav-icon text-xl">🌱</span> Uma Ideia a Comunicar</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="base"><span class="nav-icon text-xl">📖</span> A Base Sólida</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="interpretar"><span class="nav-icon text-xl">🔍</span> Considerar o Texto</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="contextualizar"><span class="nav-icon text-xl">🗣️</span> Contextualizar</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="proposito"><span class="nav-icon text-xl">🎯</span> Definir o Propósito</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="titulo"><span class="nav-icon text-xl">🏷️</span> O Título</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="dividir"><span class="nav-icon text-xl">🧩</span> Dividir para Pregar</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ilustrar"><span class="nav-icon text-xl">🖼️</span> Ilustrações</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="ouvinte"><span class="nav-icon text-xl">👂</span> Falar ao Ouvinte</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="conquistar"><span class="nav-icon text-xl">🌟</span> A Introdução</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="final"><span class="nav-icon text-xl">🏁</span> A Conclusão</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="preparo"><span class="nav-icon text-xl">🛡️</span> Preparo Final</a></li>
-                        <li><a href="#" class="nav-item flex items-center gap-3 p-2 rounded-md hover:bg-amber-100 transition-colors duration-200" data-section="pulpito"><span class="nav-icon text-xl">🎤</span> No Púlpito</a></li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <main id="content-area" class="w-full md:w-3/4 lg:w-4/5 bg-white p-6 sm:p-8 rounded-lg shadow-md">
-                
-                <section id="compreender" class="content-section space-y-4">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">💡 Para Compreender a Tarefa</h2>
-                    <p class="text-lg text-stone-600">Esta primeira seção estabelece as bases. Aqui, exploramos o que é a homilética, por que ela é fundamental para a vida da igreja e quais são as responsabilidades e os cuidados que todo pregador deve ter. Compreender esta tarefa é o primeiro passo para uma pregação fiel e eficaz.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">O que é Homilética?</h3>
-                    <p>Homilética é tanto ciência quanto arte. Como ciência, dedica-se ao estudo dos fundamentos e métodos da pregação cristã. Como arte, trata do processo criativo, passo a passo, para construir sermões eficazes. A palavra tem origem no termo grego para “conversação”, mas passou a designar o discurso religioso, estruturado para comunicar verdades espirituais de maneira clara e relevante.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que a pregação é central?</h3>
-                    <p>A pregação ocupa o centro da vida da igreja cristã. Desde o Antigo Testamento até os dias atuais, a proclamação da Palavra de Deus é o principal meio pelo qual Deus fala ao seu povo, ensina, corrige, consola e salva. Jesus mesmo fez da pregação o núcleo de seu ministério. Da mesma forma, a igreja e seus líderes devem valorizar e priorizar o púlpito como espaço privilegiado de ensino, evangelização e edificação.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Vantagens do estudo da homilética</h3>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><b>Conscientização da missão:</b> O pregador deve reconhecer seu papel como porta-voz do Senhor e depender inteiramente de Deus.</li>
-                        <li><b>Elaboração de bons sermões:</b> Quanto mais preparo, maior será a clareza, a objetividade e a força do sermão.</li>
-                        <li><b>Equilíbrio entre forma e conteúdo:</b> Sermões eficazes unem linguagem bem trabalhada e verdades profundas.</li>
-                        <li><b>Aprimoramento do desempenho:</b> O sucesso da exposição pública depende do tempo dedicado ao preparo particular.</li>
-                        <li><b>Interdisciplinaridade:</b> Dialoga com áreas como hermenêutica, teologia, psicologia e comunicação.</li>
-                        <li><b>Crescimento pessoal:</b> Exige uma vida piedosa, ética e consagrada. Pregar é viver o que se comunica.</li>
-                    </ul>
-                </section>
-
-                <section id="antes" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🙏 Antes de Tudo: O Preparo Espiritual</h2>
-                    <p class="text-lg text-stone-600">Antes de abrir os livros, o pregador deve se abrir para Deus. Esta seção aborda o aspecto mais crucial da preparação: a vida espiritual. A autenticidade da mensagem nasce da comunhão com o Autor da Palavra. Exploraremos a importância da oração, da humildade e da dependência de Deus como a verdadeira fonte de poder para a pregação.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A prioridade do preparo espiritual</h3>
-                    <p>Antes de qualquer preparação técnica ou mesmo do estudo bíblico para a elaboração de sermões, o primeiro passo do pregador deve ser o preparo espiritual. Este preparo não é apenas importante, mas fundamental: só é possível pregar autenticamente quando se vive em comunhão real com Deus. Falar em nome de Deus exige que o pregador esteja, antes de tudo, diante d’Ele, buscando Sua direção e Seu poder.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Reconhecimento das limitações humanas</h3>
-                    <p>Todo pregador, ao refletir sobre o peso da responsabilidade de comunicar a Palavra, percebe suas próprias limitações e fragilidades. Reconhecer isso não é fraqueza, mas sinal de maturidade. A verdadeira capacidade para pregar não está na autossuficiência, mas na dependência do Senhor. Deus usa pessoas comuns, conscientes de suas fraquezas, mas entregues totalmente a Ele.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Vida de comunhão e piedade</h3>
-                    <p>O impacto do sermão está profundamente ligado à vida de comunhão do pregador com Deus. O pregador precisa cultivar uma vida de oração, adoração e busca constante pela presença do Senhor. Uma vida piedosa resulta em mensagens autênticas, cheias de graça e verdade, que falam ao coração dos ouvintes.</p>
-                </section>
-
-                <section id="ideia" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🌱 Uma Ideia a Comunicar</h2>
-                    <p class="text-lg text-stone-600">Todo sermão poderoso nasce de uma única e clara ideia central. Esta seção explora como encontrar e cultivar essa semente. Veremos onde buscar inspiração – na Bíblia, na vida, nas necessidades do povo – e como manter a criatividade para que a mensagem seja sempre relevante e transformadora.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A importância da ideia central</h3>
-                    <p>A ideia central é o “embrião” do sermão: é dela que tudo se desenvolve. Essa ideia dá unidade à mensagem, orienta a seleção dos textos bíblicos, das ilustrações, das aplicações e mantém o foco do pregador. Sem clareza sobre o que se deseja comunicar, o sermão se torna vago e disperso, perdendo poder de transformação.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Onde encontrar ideias para a pregação</h3>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><b>Na Bíblia:</b> A principal e inesgotável fonte de ideias.</li>
-                        <li><b>Em livros e leituras cristãs:</b> Obras teológicas e devocionais oferecem novas perspectivas.</li>
-                        <li><b>Na vida diária e nas notícias:</b> Fatos cotidianos podem ilustrar ou contextualizar a mensagem.</li>
-                        <li><b>Nas experiências pessoais e da comunidade:</b> Histórias de vida enriquecem e tornam a mensagem próxima.</li>
-                        <li><b>Nas necessidades do povo:</b> A escuta atenta revela temas urgentes e atuais.</li>
-                        <li><b>Ao ouvir outros pregadores:</b> Podem inspirar novas ideias, sem recorrer à mera imitação.</li>
-                    </ul>
-                </section>
-
-                <section id="base" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">📖 A Base Sólida da Pregação</h2>
-                    <p class="text-lg text-stone-600">Uma mensagem sem fundamento bíblico é apenas um discurso. Nesta seção, reforçamos a verdade de que toda pregação autêntica deve estar firmemente ancorada na Palavra de Deus. Abordaremos os elementos essenciais que garantem essa base sólida: interpretação fiel, aplicação prática e um desafio claro para os ouvintes.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">A pregação fundamentada</h3>
-                    <p>A pregação cristã autêntica só tem valor quando está fundamentada na Palavra de Deus. Não basta apresentar reflexões, opiniões pessoais ou apenas mensagens de ânimo. A verdadeira pregação é a comunicação da revelação bíblica, sempre com aplicação para o presente e desafios para o futuro.</p>
-                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">Elementos essenciais da pregação</h3>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><b>Interpretação fiel das Escrituras:</b> Todo sermão começa com uma compreensão correta do texto bíblico.</li>
-                        <li><b>Aplicação prática:</b> A pregação precisa responder à pergunta: “O que Deus quer que façamos com esta mensagem?”</li>
-                        <li><b>Desafio para o futuro:</b> A pregação deve inspirar, encorajar e desafiar os ouvintes a uma nova postura.</li>
-                    </ul>
-                </section>
-
-                <section id="interpretar" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🔍 Considere o que diz o texto</h2>
-                    <p class="text-lg text-stone-600">Interpretar corretamente é a responsabilidade central do pregador. Aqui, mergulhamos nos princípios da hermenêutica: como estudar o contexto, analisar o significado das palavras e identificar a ideia central do texto bíblico, evitando os perigos de interpretações apressadas ou subjetivas.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Como interpretar corretamente?</h3>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><b>Estudo do contexto:</b> Compreenda o ambiente histórico, cultural, literário e teológico do texto.</li>
-                        <li><b>Análise do significado das palavras e frases:</b> Observe cuidadosamente os termos-chave e construções gramaticais.</li>
-                        <li><b>Leitura comparada:</b> Considere versões diferentes da Bíblia e consulte comentários e dicionários.</li>
-                        <li><b>Identificação da ideia central:</b> Descubra a principal verdade do texto, evitando distorções.</li>
-                    </ul>
-                </section>
-
-                <section id="contextualizar" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🗣️ O que o pregador vai falar? A Contextualização</h2>
-                    <p class="text-lg text-stone-600">Depois de entender o texto, é preciso traduzi-lo para o hoje. Contextualizar é construir uma ponte entre o mundo bíblico e a realidade dos ouvintes. Esta seção ensina como conhecer o público, identificar suas necessidades e adaptar a linguagem para que a Palavra fale de maneira viva e relevante.</p>
-                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">O que significa contextualizar?</h3>
-                    <p>Significa aplicar o sentido do texto à situação presente dos ouvintes, traduzir conceitos bíblicos para a linguagem e os dilemas de hoje, e ajudar a congregação a perceber que a Palavra de Deus fala de maneira viva para seus próprios desafios.</p>
-                </section>
-
-                <section id="proposito" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🎯 Onde Chegaremos? Definindo o Propósito</h2>
-                    <p class="text-lg text-stone-600">Um sermão sem propósito é uma viagem sem destino. É fundamental saber o que se quer alcançar com a mensagem. Aqui, aprendemos a definir o propósito básico (instruir, consolar, etc.) e o específico (o que se espera que o ouvinte faça, sinta ou pense), garantindo foco e objetividade.</p>
-                     <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que definir o propósito?</h3>
-                    <p>Ele direciona a seleção dos conteúdos, evita dispersão e garante objetividade. Permite que o pregador e os ouvintes saibam para onde a mensagem está caminhando, facilitando a compreensão e a aplicação.</p>
-                </section>
-
-                <section id="titulo" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🏷️ O menor resumo: O Título</h2>
-                     <p class="text-lg text-stone-600">O título é a porta de entrada para o sermão. Um bom título resume a mensagem, desperta o interesse e ajuda na memorização. Nesta seção, exploramos as características de um título eficaz: clareza, fidelidade ao conteúdo e atratividade.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Características de um bom título</h3>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><b>Clareza:</b> Deve ser facilmente compreendido.</li>
-                        <li><b>Fidelidade ao conteúdo:</b> Deve expressar fielmente a ideia central da pregação.</li>
-                        <li><b>Atratividade:</b> Deve despertar interesse e preparar o coração dos ouvintes.</li>
-                    </ul>
-                </section>
-
-                <section id="dividir" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🧩 Dividir bem para pregar melhor</h2>
-                    <p class="text-lg text-stone-600">A estrutura é o esqueleto do sermão. Uma mensagem bem dividida é mais fácil de acompanhar, entender e reter. Aqui, vemos como organizar o conteúdo em tópicos lógicos e sequenciais, criando um roteiro claro que guia tanto o pregador quanto o ouvinte.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que dividir o sermão?</h3>
-                    <p>A divisão facilita a argumentação lógica, ajuda o ouvinte a acompanhar o raciocínio e organiza o pensamento do pregador, evitando dispersão e esquecimentos durante a exposição.</p>
-                </section>
-
-                <section id="ilustrar" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🖼️ Uma casa com janelas: O Poder das Ilustrações</h2>
-                    <p class="text-lg text-stone-600">Ilustrações são as janelas do sermão, permitindo que a luz da verdade ilumine a vida cotidiana. Seguindo o modelo de Jesus e suas parábolas, esta seção ensina como usar histórias e exemplos para tornar a mensagem mais vívida, compreensível e inesquecível.</p>
-                    <h3 class="text-2xl font-semibold text-stone-700 pt-4">Por que ilustrar?</h3>
-                    <p>Ilustrações tornam a mensagem vívida, despertam interesse e atenção, e criam pontes entre o texto bíblico e a vida real dos ouvintes. Elas ajudam na aplicação prática, pois permitem que o ouvinte se veja na situação apresentada.</p>
-                </section>
-
-                <section id="ouvinte" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">👂 A boa mensagem fala ao ouvinte</h2>
-                    <p class="text-lg text-stone-600">A comunicação só é eficaz quando alcança o destinatário. O foco, portanto, deve estar no ouvinte. Nesta seção, aprendemos a importância de conhecer o público, abordar suas questões reais e conectar a verdade bíblica à sua experiência, promovendo uma transformação concreta.</p>
-                </section>
-
-                <section id="conquistar" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🌟 É preciso conquistar o ouvinte: A Introdução</h2>
-                    <p class="text-lg text-stone-600">Os primeiros minutos são decisivos. Uma introdução forte e envolvente captura a atenção e prepara o terreno para a mensagem. Veremos como criar aberturas criativas e relevantes que mostrem imediatamente ao público por que vale a pena ouvir.</p>
-                </section>
-                
-                <section id="final" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🏁 Afinal, o final: A Conclusão</h2>
-                     <p class="text-lg text-stone-600">Saber como terminar é tão importante quanto saber como começar. Um bom encerramento sintetiza a mensagem, reforça o ponto central e apela a uma decisão. Esta seção mostra como concluir com clareza, propósito e impacto, para que o sermão provoque transformação.</p>
-                </section>
-
-                <section id="preparo" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🛡️ Antes de assomar ao púlpito: O Preparo Final</h2>
-                    <p class="text-lg text-stone-600">Momentos antes da pregação, o preparo continua. Trata-se de cuidar das dimensões espiritual, emocional, mental e física. É um tempo para oração, revisão final e entrega, garantindo que o pregador suba ao púlpito com humildade, segurança e dependência de Deus.</p>
-                </section>
-
-                <section id="pulpito" class="content-section space-y-4 hidden">
-                    <h2 class="text-3xl font-bold text-amber-900 border-b-2 border-amber-200 pb-2">🎤 No púlpito: O Momento da Exposição</h2>
-                    <p class="text-lg text-stone-600">Este é o momento culminante, onde todo o preparo se concretiza. No púlpito, o pregador deve ter domínio do conteúdo, comunicar-se de forma integral (com voz, gestos e olhar), ter sensibilidade para com o público e manter-se em espírito de oração, como um instrumento fiel nas mãos de Deus.</p>
-                </section>
-
-            </main>
         </div>
-    </div>
-    
-    <footer class="bg-amber-800 text-amber-200 text-center p-4">
-        <p>Desenvolvido por Rodrigo Niskier, Gemini e ChatGPT.</p>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-16 h-full w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 overflow-y-auto custom-scrollbar">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold mb-4 serif-font">Sumário</h2>
+            <nav class="space-y-2" id="tableOfContents">
+                <!-- Will be populated by JavaScript -->
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-80 pt-20 min-h-screen">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Hero Section -->
+            <section id="hero" class="text-center mb-12 fade-in">
+                <div class="gradient-bg rounded-2xl p-12 text-white mb-8">
+                    <i class="fas fa-church text-6xl mb-6 opacity-90"></i>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4 serif-font">Homilética</h1>
+                    <p class="text-xl md:text-2xl mb-6 opacity-90 serif-font">Da Pesquisa ao Púlpito</p>
+                    <p class="text-lg max-w-3xl mx-auto opacity-80">
+                        Um estudo completo sobre a arte e ciência da pregação cristã, 
+                        baseado na obra de Jilton Moraes. Aprenda desde os fundamentos 
+                        até as técnicas avançadas para comunicar a Palavra de Deus com poder e clareza.
+                    </p>
+                    <button onclick="showSection('welcome-section')" class="mt-8 bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Começar Estudos <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center card-hover">
+                    <i class="fas fa-bible text-3xl text-primary mb-3"></i>
+                    <h3 class="text-2xl font-bold text-primary">15</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Capítulos</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center card-hover">
+                    <i class="fas fa-lightbulb text-3xl text-secondary mb-3"></i>
+                    <h3 class="text-2xl font-bold text-secondary">40+</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Conceitos</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center card-hover">
+                    <i class="fas fa-microphone text-3xl text-accent mb-3"></i>
+                    <h3 class="text-2xl font-bold text-accent">3</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Casos Práticos</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center card-hover">
+                    <i class="fas fa-chart-line text-3xl text-green-500 mb-3"></i>
+                    <h3 class="text-2xl font-bold text-green-500">100+</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Dicas Práticas</p>
+                </div>
+            </section>
+
+            <!-- Welcome Section -->
+            <section id="welcome-section" class="content-section active mb-16">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 text-center">
+                    <div class="max-w-3xl mx-auto">
+                        <i class="fas fa-graduation-cap text-6xl text-primary mb-6"></i>
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">Bem-vindo ao Curso de Homilética</h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed serif-font">
+                            Descubra os segredos da pregação eficaz através deste estudo abrangente. 
+                            Navigate pelo menu lateral para explorar cada aspecto da arte de pregar, 
+                            desde a preparação espiritual até a entrega no púlpito.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                            <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                                <i class="fas fa-heart text-3xl text-purple-500 mb-3"></i>
+                                <h3 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">Preparo Espiritual</h3>
+                                <p class="text-sm text-purple-700 dark:text-purple-300">Base fundamental para toda pregação</p>
+                            </div>
+                            <div class="bg-pink-50 dark:bg-pink-900/20 p-6 rounded-xl border border-pink-200 dark:border-pink-800">
+                                <i class="fas fa-tools text-3xl text-pink-500 mb-3"></i>
+                                <h3 class="font-semibold text-pink-800 dark:text-pink-200 mb-2">Técnicas Práticas</h3>
+                                <p class="text-sm text-pink-700 dark:text-pink-300">Métodos comprovados de preparação</p>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-800">
+                                <i class="fas fa-comments text-3xl text-amber-500 mb-3"></i>
+                                <h3 class="font-semibold text-amber-800 dark:text-amber-200 mb-2">Comunicação Eficaz</h3>
+                                <p class="text-sm text-amber-700 dark:text-amber-300">Arte de falar ao coração</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <p class="text-blue-800 dark:text-blue-200 font-medium serif-font">
+                                📖 "A pregação é tanto ciência quanto arte" - Explore cada dimensão neste curso completo
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content Sections -->
+            <div id="content">
+                <!-- Section 1: Compreender a Tarefa -->
+                <section id="section-1" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-compass mr-3"></i>
+                            Para Compreender a Tarefa
+                        </h2>
+                        
+                        <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                            <h3 class="highlight serif-font">O que é Homilética?</h3>
+                            <p class="text-lg leading-relaxed serif-font">
+                                <strong>Homilética é tanto ciência quanto arte.</strong> Como ciência, dedica-se ao 
+                                estudo dos fundamentos e métodos da pregação cristã. Como arte, trata do 
+                                processo criativo, passo a passo, para construir sermões eficazes.
+                            </p>
+                        </div>
+
+                        <!-- Interactive Elements -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <!-- Central Role Card -->
+                            <div class="bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-purple-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                                <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-3">
+                                    <i class="fas fa-star mr-2"></i>Por que a pregação é central?
+                                </h4>
+                                <p class="text-purple-700 dark:text-purple-300 text-sm">
+                                    A pregação ocupa o centro da vida da igreja cristã. Desde o Antigo Testamento 
+                                    até hoje, é o principal meio pelo qual Deus fala ao seu povo, ensina, 
+                                    corrige, consola e salva.
+                                </p>
+                            </div>
+
+                            <!-- Responsibilities Card -->
+                            <div class="bg-gradient-to-br from-pink-50 to-rose-100 dark:from-pink-900/20 dark:to-rose-900/20 p-6 rounded-xl border border-pink-200 dark:border-pink-800">
+                                <h4 class="font-semibold text-pink-800 dark:text-pink-200 mb-3">
+                                    <i class="fas fa-user-tie mr-2"></i>Responsabilidades do Pregador
+                                </h4>
+                                <p class="text-pink-700 dark:text-pink-300 text-sm">
+                                    Falar em nome de Deus exige preparo e temor. O pregador é um canal da mensagem 
+                                    divina e não um simples orador.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Advantages Section -->
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold mb-6 serif-font">Vantagens do Estudo da Homilética</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-4">
+                                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                        <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">1. Conscientização da missão</h4>
+                                        <p class="text-sm text-blue-700 dark:text-blue-300">Reconhecer o papel como porta-voz do Senhor</p>
+                                    </div>
+                                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                                        <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2">2. Elaboração de bons sermões</h4>
+                                        <p class="text-sm text-green-700 dark:text-green-300">Mais estudo resulta em maior clareza e força</p>
+                                    </div>
+                                    <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                                        <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">3. Equilíbrio forma/conteúdo</h4>
+                                        <p class="text-sm text-purple-700 dark:text-purple-300">Linguagem e verdades profundas unidos</p>
+                                    </div>
+                                    <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+                                        <h4 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">4. Aprimoramento do desempenho</h4>
+                                        <p class="text-sm text-orange-700 dark:text-orange-300">Sucesso público depende do preparo particular</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-200 dark:border-teal-800">
+                                        <h4 class="font-semibold text-teal-800 dark:text-teal-200 mb-2">5. Interdisciplinaridade</h4>
+                                        <p class="text-sm text-teal-700 dark:text-teal-300">Diálogo com múltiplas áreas do conhecimento</p>
+                                    </div>
+                                    <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                                        <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2">6. Crescimento pessoal</h4>
+                                        <p class="text-sm text-red-700 dark:text-red-300">Vida piedosa, ética e consagrada</p>
+                                    </div>
+                                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                                        <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">7. Motivação contínua</h4>
+                                        <p class="text-sm text-indigo-700 dark:text-indigo-300">O pregador é sempre um estudante</p>
+                                    </div>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">8. Organização do acervo</h4>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">Sermões arquivados para uso contínuo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cautions -->
+                        <div class="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/10 dark:to-yellow-900/10 p-6 rounded-xl border border-amber-200 dark:border-amber-800">
+                            <h3 class="text-xl font-semibold mb-4 text-amber-800 dark:text-amber-200 serif-font">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Cuidados no Exercício da Homilética
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <ul class="space-y-2 text-amber-700 dark:text-amber-300">
+                                    <li>• Evitar espírito crítico exagerado</li>
+                                    <li>• Jamais desprezar a inspiração do Espírito Santo</li>
+                                    <li>• Conhecer a realidade do público</li>
+                                    <li>• Viver aquilo que se prega</li>
+                                </ul>
+                                <ul class="space-y-2 text-amber-700 dark:text-amber-300">
+                                    <li>• Buscar agradar a Deus primeiro</li>
+                                    <li>• Amar verdadeiramente as pessoas</li>
+                                    <li>• Manter postura humilde e aberta</li>
+                                    <li>• Comunicar com vida e preparo integral</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Antes de Tudo -->
+                <section id="section-2" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-praying-hands mr-3"></i>
+                            Antes de Tudo: O Preparo Espiritual
+                        </h2>
+
+                        <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                            <blockquote class="border-l-4 border-primary pl-4 italic text-lg serif-font">
+                                "Antes de qualquer preparação técnica ou mesmo do estudo bíblico, 
+                                o primeiro passo do pregador deve ser o preparo espiritual."
+                            </blockquote>
+                        </div>
+
+                        <!-- Priority Section -->
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold mb-6 serif-font">A Prioridade do Preparo Espiritual</h3>
+                            <div class="bg-gradient-to-r from-purple-50 via-pink-50 to-orange-50 dark:from-purple-900/10 dark:via-pink-900/10 dark:to-orange-900/10 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="text-center">
+                                        <i class="fas fa-heart text-4xl text-purple-500 mb-3"></i>
+                                        <h4 class="font-bold text-purple-800 dark:text-purple-200 mb-2">Comunhão Real</h4>
+                                        <p class="text-sm text-purple-700 dark:text-purple-300">Só é possível pregar autenticamente quando se vive em comunhão real com Deus</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-user-check text-4xl text-pink-500 mb-3"></i>
+                                        <h4 class="font-bold text-pink-800 dark:text-pink-200 mb-2">Reconhecer Limitações</h4>
+                                        <p class="text-sm text-pink-700 dark:text-pink-300">Maturidade é reconhecer fragilidades e depender do Senhor</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-users text-4xl text-orange-500 mb-3"></i>
+                                        <h4 class="font-bold text-orange-800 dark:text-orange-200 mb-2">Sensibilidade</h4>
+                                        <p class="text-sm text-orange-700 dark:text-orange-300">Conhecer necessidades das pessoas para mensagem relevante</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Essential Elements -->
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold mb-6 serif-font">Elementos Essenciais</h3>
+                            <div class="space-y-4">
+                                <div class="accordion-item">
+                                    <button class="accordion-header w-full text-left p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors flex items-center justify-between">
+                                        <span class="font-semibold serif-font">
+                                            <i class="fas fa-pray mr-2 text-blue-500"></i>
+                                            Vida de Comunhão e Piedade
+                                        </span>
+                                        <i class="fas fa-chevron-down transition-transform"></i>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-white dark:bg-gray-800 rounded-b-lg border-x border-b border-blue-200 dark:border-blue-800">
+                                        <p class="serif-font">O impacto do sermão está profundamente ligado à vida de comunhão do pregador com Deus. É necessário cultivar uma vida de oração, adoração e busca constante pela presença do Senhor. Uma vida piedosa resulta em mensagens autênticas, cheias de graça e verdade.</p>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header w-full text-left p-4 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors flex items-center justify-between">
+                                        <span class="font-semibold serif-font">
+                                            <i class="fas fa-bolt mr-2 text-green-500"></i>
+                                            Oração como Fonte de Poder
+                                        </span>
+                                        <i class="fas fa-chevron-down transition-transform"></i>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-white dark:bg-gray-800 rounded-b-lg border-x border-b border-green-200 dark:border-green-800">
+                                        <p class="serif-font">A oração é elemento indispensável à vida do pregador. É por meio dela que se recebe direção, poder e sensibilidade espiritual. Grandes pregadores sempre foram homens e mulheres de oração. Oração não é apenas dever, mas privilégio e necessidade permanente.</p>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header w-full text-left p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors flex items-center justify-between">
+                                        <span class="font-semibold serif-font">
+                                            <i class="fas fa-book-open mr-2 text-purple-500"></i>
+                                            Meditação Contínua na Palavra
+                                        </span>
+                                        <i class="fas fa-chevron-down transition-transform"></i>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-white dark:bg-gray-800 rounded-b-lg border-x border-b border-purple-200 dark:border-purple-800">
+                                        <p class="serif-font">Além de orar, o pregador precisa manter o hábito diário de leitura e meditação nas Escrituras. A mensagem transmitida ao povo deve ser resultado de uma vida alimentada pela Palavra de Deus. Só assim terá autoridade espiritual para instruir, corrigir e consolar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warning Section -->
+                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2 serif-font">Consequências da Negligência Espiritual</h4>
+                                    <p class="text-red-700 dark:text-red-300 text-sm serif-font">
+                                        Negligenciar o preparo espiritual é colocar em risco o ministério da pregação. 
+                                        Muitos fracassam, desistem ou perdem a relevância por não priorizarem a vida espiritual. 
+                                        O único caminho seguro é a dependência contínua de Deus.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Uma Ideia a Comunicar -->
+                <section id="section-3" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-lightbulb mr-3"></i>
+                            Uma Ideia a Comunicar
+                        </h2>
+
+                        <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                            <h3 class="highlight serif-font">O Ponto de Partida da Pregação</h3>
+                            <p class="text-lg leading-relaxed serif-font">
+                                Toda pregação autêntica começa com uma <strong>ideia central significativa</strong>. 
+                                Antes de estruturar qualquer sermão, é indispensável que o pregador tenha clareza 
+                                sobre qual verdade ou mensagem precisa ser comunicada à igreja.
+                            </p>
+                        </div>
+
+                        <!-- Central Idea Importance -->
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold mb-6 serif-font">A Importância da Ideia Central</h3>
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-seedling text-3xl text-blue-500 mr-4"></i>
+                                    <div>
+                                        <h4 class="font-bold text-blue-800 dark:text-blue-200 serif-font">O "Embrião" do Sermão</h4>
+                                        <p class="text-blue-700 dark:text-blue-300 text-sm">É da ideia central que tudo se desenvolve</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <ul class="space-y-1 text-blue-700 dark:text-blue-300">
+                                        <li>• Dá unidade à mensagem</li>
+                                        <li>• Orienta seleção de textos</li>
+                                        <li>• Guia escolha de ilustrações</li>
+                                    </ul>
+                                    <ul class="space-y-1 text-blue-700 dark:text-blue-300">
+                                        <li>• Mantém foco do pregador</li>
+                                        <li>• Evita dispersão e vagueza</li>
+                                        <li>• Preserva poder de transformação</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sources of Ideas -->
+                        <div class="mb-8">
+                            <h3 class="text-2xl font-semibold mb-6 serif-font">Onde Encontrar Ideias para a Pregação</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800 card-hover">
+                                    <i class="fas fa-bible text-2xl text-purple-500 mb-3"></i>
+                                    <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-2">1. Na Bíblia</h4>
+                                    <p class="text-sm text-purple-700 dark:text-purple-300">Principal e inesgotável fonte. Leitura, estudo e meditação na Palavra.</p>
+                                </div>
+
+                                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800 card-hover">
+                                    <i class="fas fa-book text-2xl text-green-500 mb-3"></i>
+                                    <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2">2. Em Livros Cristãos</h4>
+                                    <p class="text-sm text-green-700 dark:text-green-300">Obras teológicas, devocionais e sermões inspiram temas relevantes.</p>
+                                </div>
+
+                                <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800 card-hover">
+                                    <i class="fas fa-newspaper text-2xl text-orange-500 mb-3"></i>
+                                    <h4 class="font-semibold text-orange-800 dark:text-orange-200 mb-2">3. Na Vida Diária</h4>
+                                    <p class="text-sm text-orange-700 dark:text-orange-300">Fatos cotidianos e notícias contextualizam a mensagem bíblica.</p>
+                                </div>
+
+                                <div class="bg-pink-50 dark:bg-pink-900/20 p-4 rounded-lg border border-pink-200 dark:border-pink-800 card-hover">
+                                    <i class="fas fa-heart text-2xl text-pink-500 mb-3"></i>
+                                    <h4 class="font-semibold text-pink-800 dark:text-pink-200 mb-2">4. Nas Experiências</h4>
+                                    <p class="text-sm text-pink-700 dark:text-pink-300">Vivências pessoais e da comunidade enriquecem a mensagem.</p>
+                                </div>
+
+                                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 card-hover">
+                                    <i class="fas fa-users text-2xl text-blue-500 mb-3"></i>
+                                    <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">5. Nas Necessidades</h4>
+                                    <p class="text-sm text-blue-700 dark:text-blue-300">Escuta atenta revela temas urgentes e atuais.</p>
+                                </div>
+
+                                <div class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-200 dark:border-teal-800 card-hover">
+                                    <i class="fas fa-microphone text-2xl text-teal-500 mb-3"></i>
+                                    <h4 class="font-semibold text-teal-800 dark:text-teal-200 mb-2">6. Outros Pregadores</h4>
+                                    <p class="text-sm text-teal-700 dark:teal-blue-300">Adaptação criativa com ética e respeito.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Principles -->
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/10 dark:to-orange-900/10 p-6 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                            <h3 class="text-xl font-semibold mb-4 text-yellow-800 dark:text-yellow-200 serif-font">
+                                <i class="fas fa-star mr-2"></i>Princípios para Manter Criatividade e Relevância
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <ul class="space-y-2 text-yellow-700 dark:text-yellow-300">
+                                    <li>• <strong>Buscar inspiração em Deus:</strong> Reconhecer que criatividade vem do Senhor</li>
+                                    <li>• <strong>Anotar ideias:</strong> Sistema pessoal de registro e arquivo</li>
+                                </ul>
+                                <ul class="space-y-2 text-yellow-700 dark:text-yellow-300">
+                                    <li>• <strong>Observar e escutar:</strong> Atenção ao ambiente e às pessoas</li>
+                                    <li>• <strong>Ética pastoral:</strong> Preservar sigilo e privacidade sempre</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flashcards Section -->
+                <section id="flashcards" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-cards-blank mr-3"></i>
+                            Flashcards - Conceitos de Homilética
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="flashcards-container">
+                            <!-- Flashcards will be generated by JavaScript -->
+                        </div>
+                        
+                        <div class="text-center mt-6">
+                            <button onclick="shuffleFlashcards()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                                <i class="fas fa-shuffle mr-2"></i>Embaralhar Cards
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section id="quiz" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-question-circle mr-3"></i>
+                            Quiz - Avalie seus Conhecimentos
+                        </h2>
+                        
+                        <div id="quiz-container">
+                            <!-- Quiz questions will be generated by JavaScript -->
+                        </div>
+                        
+                        <div class="text-center mt-6">
+                            <button onclick="startQuiz()" class="bg-secondary text-white px-6 py-3 rounded-lg hover:bg-secondary/90 transition-colors">
+                                <i class="fas fa-play mr-2"></i>Iniciar Avaliação
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practical Cases -->
+                <section id="practical-cases" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-clipboard-list mr-3"></i>
+                            Casos Práticos de Preparação de Sermões
+                        </h2>
+                        
+                        <div class="space-y-8">
+                            <!-- Case 1 -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                                <div class="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6">
+                                    <h3 class="text-xl font-bold mb-2 serif-font">Caso 1: Sermão Expositivo</h3>
+                                    <p class="opacity-90">Preparando uma mensagem sobre Filipenses 4:6-7</p>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="mb-6">
+                                        <h4 class="font-semibold text-lg mb-3 text-purple-600 dark:text-purple-400 serif-font">
+                                            <i class="fas fa-bible mr-2"></i>Texto Base
+                                        </h4>
+                                        <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                                            <p class="serif-font italic text-purple-800 dark:text-purple-200">
+                                                "Não andem ansiosos por coisa alguma, mas em tudo, pela oração e súplicas, 
+                                                e com ação de graças, apresentem seus pedidos a Deus. E a paz de Deus, 
+                                                que excede todo o entendimento, guardará o coração e a mente de vocês 
+                                                em Cristo Jesus."
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="case-study-steps">
+                                        <div class="step-navigation mb-6">
+                                            <div class="flex space-x-2 overflow-x-auto">
+                                                <button class="step-btn active" data-step="1">Ideia Central</button>
+                                                <button class="step-btn" data-step="2">Título</button>
+                                                <button class="step-btn" data-step="3">Divisões</button>
+                                                <button class="step-btn" data-step="4">Aplicações</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="step-content" id="step-1">
+                                            <h4 class="font-semibold mb-3 text-purple-600 dark:text-purple-400 serif-font">Identificando a Ideia Central</h4>
+                                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                                                <p class="mb-2 serif-font"><strong>Ideia Central:</strong></p>
+                                                <p class="text-sm serif-font">Deus oferece paz sobrenatural para aqueles que trocam a ansiedade pela oração confiante.</p>
+                                                <p class="mt-3 mb-2 serif-font"><strong>Propósito:</strong></p>
+                                                <p class="text-sm serif-font">Ensinar os crentes a combater a ansiedade através da oração e experimentar a paz de Deus.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="step-content hidden" id="step-2">
+                                            <h4 class="font-semibold mb-3 text-purple-600 dark:text-purple-400 serif-font">Criando o Título</h4>
+                                            <div class="space-y-4">
+                                                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                                                    <p class="font-semibold text-green-800 dark:text-green-200 mb-2 serif-font">Título Escolhido:</p>
+                                                    <p class="text-lg serif-font italic">"Da Ansiedade à Paz: A Receita Divina"</p>
+                                                </div>
+                                                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                                    <p class="font-semibold text-blue-800 dark:text-blue-200 mb-2 serif-font">Características:</p>
+                                                    <ul class="text-sm serif-font space-y-1">
+                                                        <li>• Clara e direta</li>
+                                                        <li>• Reflete o conteúdo central</li>
+                                                        <li>• Desperta interesse</li>
+                                                        <li>• Promete solução prática</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="step-content hidden" id="step-3">
+                                            <h4 class="font-semibold mb-3 text-purple-600 dark:text-purple-400 serif-font">Estruturando as Divisões</h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                                                    <h5 class="font-semibold text-red-800 dark:text-red-200 mb-2 serif-font">I. O Problema</h5>
+                                                    <p class="text-sm text-red-700 dark:text-red-300 serif-font">"Não andem ansiosos por coisa alguma"</p>
+                                                    <ul class="text-xs mt-2 space-y-1">
+                                                        <li>• Natureza da ansiedade</li>
+                                                        <li>• Efeitos destrutivos</li>
+                                                        <li>• Comando divino</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                                    <h5 class="font-semibold text-blue-800 dark:text-blue-200 mb-2 serif-font">II. A Solução</h5>
+                                                    <p class="text-sm text-blue-700 dark:text-blue-300 serif-font">"Pela oração e súplicas... apresentem seus pedidos"</p>
+                                                    <ul class="text-xs mt-2 space-y-1">
+                                                        <li>• Oração constante</li>
+                                                        <li>• Súplicas específicas</li>
+                                                        <li>• Gratidão em tudo</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                                                    <h5 class="font-semibold text-green-800 dark:text-green-200 mb-2 serif-font">III. O Resultado</h5>
+                                                    <p class="text-sm text-green-700 dark:text-green-300 serif-font">"A paz de Deus... guardará"</p>
+                                                    <ul class="text-xs mt-2 space-y-1">
+                                                        <li>• Paz sobrenatural</li>
+                                                        <li>• Proteção divina</li>
+                                                        <li>• Segurança em Cristo</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="step-content hidden" id="step-4">
+                                            <h4 class="font-semibold mb-3 text-purple-600 dark:text-purple-400 serif-font">Aplicações Práticas</h4>
+                                            <div class="space-y-4">
+                                                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                                    <p class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2 serif-font">Para a Igreja:</p>
+                                                    <ul class="text-sm text-yellow-700 dark:text-yellow-300 serif-font space-y-1">
+                                                        <li>• Ensinar práticas de oração específicas</li>
+                                                        <li>• Criar momentos de gratidão corporativa</li>
+                                                        <li>• Estabelecer grupos de apoio em oração</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-200 dark:border-teal-800">
+                                                    <p class="font-semibold text-teal-800 dark:text-teal-200 mb-2 serif-font">Para o Indivíduo:</p>
+                                                    <ul class="text-sm text-teal-700 dark:text-teal-300 serif-font space-y-1">
+                                                        <li>• Identificar fontes pessoais de ansiedade</li>
+                                                        <li>• Desenvolver disciplina de oração diária</li>
+                                                        <li>• Praticar gratidão como estilo de vida</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Case 2 -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                                <div class="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6">
+                                    <h3 class="text-xl font-bold mb-2 serif-font">Caso 2: Sermão Temático</h3>
+                                    <p class="opacity-90">Preparando uma mensagem sobre "Características do Pregador Eficaz"</p>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="mb-6">
+                                        <h4 class="font-semibold text-lg mb-3 text-green-600 dark:text-green-400 serif-font">
+                                            <i class="fas fa-target mr-2"></i>Objetivo da Mensagem
+                                        </h4>
+                                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed serif-font">
+                                            Equipar líderes e pregadores com as qualidades essenciais para um ministério 
+                                            eficaz da pregação, baseado em exemplos bíblicos e princípios práticos.
+                                        </p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                                            <h4 class="font-semibold text-green-800 dark:text-green-200 mb-3 serif-font">
+                                                <i class="fas fa-list mr-2"></i>Estrutura Proposta
+                                            </h4>
+                                            <ul class="text-sm text-green-700 dark:text-green-300 serif-font space-y-2">
+                                                <li><strong>I.</strong> Preparo Espiritual (2 Tm 2:15)</li>
+                                                <li><strong>II.</strong> Conhecimento da Palavra (Esdras 7:10)</li>
+                                                <li><strong>III.</strong> Vida Exemplar (1 Tm 4:12)</li>
+                                                <li><strong>IV.</strong> Amor pelas Pessoas (1 Co 9:22)</li>
+                                                <li><strong>V.</strong> Dependência de Deus (1 Co 2:4)</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                            <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-3 serif-font">
+                                                <i class="fas fa-lightbulb mr-2"></i>Recursos de Apoio
+                                            </h4>
+                                            <ul class="text-sm text-blue-700 dark:text-blue-300 serif-font space-y-2">
+                                                <li>• Exemplos de Esdras, Paulo e Pedro</li>
+                                                <li>• Ilustrações de pregadores históricos</li>
+                                                <li>• Aplicações específicas para o contexto local</li>
+                                                <li>• Perguntas para auto-avaliação</li>
+                                                <li>• Desafios práticos semanais</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6 bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-200 dark:border-teal-800">
+                                        <h4 class="font-semibold text-teal-800 dark:text-teal-200 mb-2 serif-font">
+                                            <i class="fas fa-bullseye mr-2"></i>Resultado Esperado
+                                        </h4>
+                                        <p class="text-teal-700 dark:text-teal-300 text-sm serif-font">
+                                            Pregadores mais conscientes de sua responsabilidade, comprometidos com o crescimento 
+                                            pessoal e equipados com ferramentas práticas para aprimorar seu ministério da Palavra.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resources Section -->
+                <section id="resources" class="content-section mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-3xl font-bold mb-6 text-primary serif-font">
+                            <i class="fas fa-book-reader mr-3"></i>
+                            Recursos para Aprofundamento
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Essential Books -->
+                            <div>
+                                <h3 class="text-xl font-semibold mb-4 text-secondary dark:text-pink-400 serif-font">Obras Essenciais</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                                        <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-2 serif-font">Jilton Moraes</h4>
+                                        <p class="text-sm text-purple-700 dark:text-purple-300 mb-2 serif-font"><em>Homilética: Da Pesquisa ao Púlpito</em></p>
+                                        <p class="text-xs text-purple-600 dark:text-purple-400 serif-font">
+                                            Obra base deste curso, oferecendo abordagem prática e didática da arte de pregar.
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                        <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2 serif-font">John Stott</h4>
+                                        <p class="text-sm text-blue-700 dark:text-blue-300 mb-2 serif-font"><em>Eu Creio na Pregação</em></p>
+                                        <p class="text-xs text-blue-600 dark:text-blue-400 serif-font">
+                                            Defesa apaixonada da pregação expositiva e seu papel central na igreja.
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                                        <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2 serif-font">Haddon Robinson</h4>
+                                        <p class="text-sm text-green-700 dark:text-green-300 mb-2 serif-font"><em>Pregação Bíblica</em></p>
+                                        <p class="text-xs text-green-600 dark:text-green-400 serif-font">
+                                            Metodologia sólida para desenvolvimento e entrega de sermões expositivos.
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+                                        <h4 class="font-semibold text-orange-800 dark:text-orange-200 mb-2 serif-font">Hernandes Dias Lopes</h4>
+                                        <p class="text-sm text-orange-700 dark:text-orange-300 mb-2 serif-font"><em>Pregação Expositiva</em></p>
+                                        <p class="text-xs text-orange-600 dark:text-orange-400 serif-font">
+                                            Abordagem brasileira com ênfase na exegese e aplicação contextual.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Practical Tools -->
+                            <div>
+                                <h3 class="text-xl font-semibold mb-4 text-accent dark:text-yellow-400 serif-font">Ferramentas Práticas</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-2 serif-font">Software de Estudo</h4>
+                                        <ul class="text-sm text-gray-600 dark:text-gray-300 serif-font space-y-1">
+                                            <li>• Logos Bible Software</li>
+                                            <li>• BibleWorks</li>
+                                            <li>• E-Sword</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-2 serif-font">Comentários</h4>
+                                        <ul class="text-sm text-gray-600 dark:text-gray-300 serif-font space-y-1">
+                                            <li>• Série Cultura Bíblica</li>
+                                            <li>• Comentário Bíblico Moody</li>
+                                            <li>• Matthew Henry</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-2 serif-font">Recursos Online</h4>
+                                        <ul class="text-sm text-gray-600 dark:text-gray-300 serif-font space-y-1">
+                                            <li>• Blue Letter Bible</li>
+                                            <li>• Pregue a Palavra</li>
+                                            <li>• Ministério Ligonier</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="md:ml-80 bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="mb-4 serif-font">&copy; 2024 Homilética: Da Pesquisa ao Púlpito</p>
+            <p class="text-gray-400 text-sm serif-font">Baseado na obra de Jilton Moraes</p>
+        </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const nav = document.getElementById('main-nav');
-            const navItems = nav.querySelectorAll('.nav-item');
-            const contentSections = document.querySelectorAll('.content-section');
-
-            function updateContent(sectionId) {
-                contentSections.forEach(section => {
-                    section.classList.add('hidden', 'opacity-0');
-                });
-                navItems.forEach(item => {
-                    item.classList.remove('active');
-                });
-
-                const activeSection = document.getElementById(sectionId);
-                const activeNavItem = nav.querySelector(`[data-section="${sectionId}"]`);
-
-                if (activeSection) {
-                    activeSection.classList.remove('hidden');
-                    setTimeout(() => activeSection.classList.remove('opacity-0'), 50);
+        // Dark mode functionality
+        function initDarkMode() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
                 }
-                if (activeNavItem) {
-                    activeNavItem.classList.add('active');
+            });
+        }
+
+        // Table of contents
+        const sections = [
+            { id: 'welcome-section', title: 'Início', icon: 'fas fa-home' },
+            { id: 'section-1', title: 'Compreender a Tarefa', icon: 'fas fa-compass' },
+            { id: 'section-2', title: 'Antes de Tudo', icon: 'fas fa-praying-hands' },
+            { id: 'section-3', title: 'Uma Ideia a Comunicar', icon: 'fas fa-lightbulb' },
+            { id: 'flashcards', title: 'Flashcards', icon: 'fas fa-cards-blank' },
+            { id: 'quiz', title: 'Quiz', icon: 'fas fa-question-circle' },
+            { id: 'practical-cases', title: 'Casos Práticos', icon: 'fas fa-clipboard-list' },
+            { id: 'resources', title: 'Recursos', icon: 'fas fa-book-reader' }
+        ];
+
+        function generateTableOfContents() {
+            const tocContainer = document.getElementById('tableOfContents');
+            sections.forEach(section => {
+                const link = document.createElement('a');
+                link.href = `#${section.id}`;
+                link.className = 'nav-item block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300 hover:text-primary';
+                link.innerHTML = `<i class="${section.icon} mr-3"></i>${section.title}`;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    showSection(section.id);
+                };
+                tocContainer.appendChild(link);
+            });
+        }
+
+        // Show specific section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Add animation
+                targetSection.classList.add('fade-in');
+            }
+            
+            // Update navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`a[href="#${sectionId}"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+            
+            // Close mobile menu if open
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        // Flashcards data
+        const flashcardsData = [
+            {
+                front: "Homilética",
+                back: "Ciência e arte que estuda os fundamentos e métodos da pregação cristã, tratando do processo criativo para construir sermões eficazes."
+            },
+            {
+                front: "Ideia Central",
+                back: "O 'embrião' do sermão - verdade significativa da qual tudo se desenvolve, dando unidade e direção à mensagem."
+            },
+            {
+                front: "Preparo Espiritual",
+                back: "Primeiro e fundamental passo do pregador: buscar comunhão com Deus, oração e meditação antes de qualquer preparação técnica."
+            },
+            {
+                front: "Propósito do Sermão",
+                back: "Objetivo claro e específico do que se espera alcançar com a mensagem - instruir, exortar, consolar, evangelizar ou encorajar."
+            },
+            {
+                front: "Contextualização",
+                back: "Processo de tornar a mensagem bíblica relevante e compreensível para o público atual, aplicando o texto às necessidades presentes."
+            },
+            {
+                front: "Divisões do Sermão",
+                back: "Organização do conteúdo em tópicos lógicos e sequenciais que facilitam a compreensão e retenção da mensagem pelos ouvintes."
+            },
+            {
+                front: "Ilustrações",
+                back: "Histórias, exemplos e metáforas que tornam o sermão vívido e marcante, facilitando a fixação dos conceitos - 'janelas da casa'."
+            },
+            {
+                front: "Introdução Eficaz",
+                back: "Início forte e envolvente que conquista a atenção, estabelece relevância e prepara o coração dos ouvintes para a mensagem."
+            },
+            {
+                front: "Conclusão",
+                back: "Encerramento claro que sintetiza a mensagem, reforça pontos principais e convida a uma resposta prática dos ouvintes."
+            },
+            {
+                front: "Autoridade da Pregação",
+                back: "Poder da mensagem que vem não das habilidades do pregador, mas da centralidade de Cristo e fidelidade às Escrituras."
+            },
+            {
+                front: "Vida do Mensageiro",
+                back: "A vida pessoal do pregador valida ou anula sua mensagem - é necessário viver aquilo que se prega para ter autenticidade."
+            },
+            {
+                front: "Dependência do Espírito Santo",
+                back: "Reconhecimento de que a transformação e o poder da pregação vêm de Deus, não da capacidade humana do pregador."
+            }
+        ];
+
+        function generateFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            flashcardsData.forEach((card, index) => {
+                const flashcardDiv = document.createElement('div');
+                flashcardDiv.className = 'flashcard cursor-pointer';
+                flashcardDiv.onclick = () => flipCard(index);
+                
+                flashcardDiv.innerHTML = `
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                            <h3 class="text-lg font-bold text-center serif-font">${card.front}</h3>
+                        </div>
+                        <div class="flashcard-back bg-gradient-to-br from-green-500 to-teal-600 text-white">
+                            <p class="text-sm text-center serif-font">${card.back}</p>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(flashcardDiv);
+            });
+        }
+
+        function flipCard(index) {
+            const flashcards = document.querySelectorAll('.flashcard');
+            flashcards[index].classList.toggle('flipped');
+        }
+
+        function shuffleFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            const cards = Array.from(container.children);
+            
+            // Shuffle array
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            
+            // Remove all cards and re-add in new order
+            container.innerHTML = '';
+            cards.forEach(card => {
+                card.classList.remove('flipped'); // Reset all cards
+                container.appendChild(card);
+            });
+        }
+
+        // Quiz functionality
+        const quizData = [
+            {
+                question: "Qual é a definição mais completa de Homilética segundo o texto?",
+                options: [
+                    "Apenas a ciência da pregação cristã",
+                    "Somente a arte de construir sermões",
+                    "Ciência e arte que estuda fundamentos e métodos da pregação",
+                    "Técnica de comunicação religiosa"
+                ],
+                correct: 2,
+                explanation: "Homilética é tanto ciência (estudo de fundamentos e métodos) quanto arte (processo criativo para construir sermões eficazes)."
+            },
+            {
+                question: "Qual deve ser o primeiro passo na preparação de um sermão?",
+                options: [
+                    "Escolher o texto bíblico",
+                    "Definir o título",
+                    "Preparo espiritual do pregador",
+                    "Pesquisar ilustrações"
+                ],
+                correct: 2,
+                explanation: "O preparo espiritual deve vir antes de qualquer preparação técnica ou estudo bíblico, sendo fundamental para uma pregação autêntica."
+            },
+            {
+                question: "O que caracteriza uma boa ideia central para o sermão?",
+                options: [
+                    "Ser complexa e filosófica",
+                    "Dar unidade e orientar toda a mensagem",
+                    "Impressionar os ouvintes",
+                    "Ser original e inédita"
+                ],
+                correct: 1,
+                explanation: "A ideia central é o 'embrião' do sermão que dá unidade à mensagem, orienta a seleção de conteúdos e mantém o foco do pregador."
+            },
+            {
+                question: "Por que as ilustrações são importantes no sermão?",
+                options: [
+                    "Para entreter o público",
+                    "Para mostrar cultura do pregador",
+                    "Para tornar a mensagem vívida e facilitar fixação",
+                    "Para preencher tempo"
+                ],
+                correct: 2,
+                explanation: "Ilustrações são como 'janelas da casa' - trazem vida à mensagem, tornam conceitos vívidos e facilitam a fixação pelos ouvintes."
+            },
+            {
+                question: "Qual é a principal fonte de autoridade na pregação?",
+                options: [
+                    "A eloquência do pregador",
+                    "O conhecimento teológico",
+                    "A centralidade de Cristo na mensagem",
+                    "A experiência pastoral"
+                ],
+                correct: 2,
+                explanation: "A autoridade da pregação não se baseia em habilidades pessoais, mas na centralidade de Cristo na mensagem proclamada."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizStarted = false;
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            quizStarted = true;
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const container = document.getElementById('quiz-container');
+            const question = quizData[currentQuizIndex];
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm text-gray-500 serif-font">Pergunta ${currentQuizIndex + 1} de ${quizData.length}</span>
+                        <span class="text-sm text-gray-500 serif-font">Pontuação: ${quizScore}/${quizData.length}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-6">
+                        <div class="bg-gradient-to-r from-primary via-secondary to-accent h-2 rounded-full" style="width: ${((currentQuizIndex) / quizData.length) * 100}%"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 serif-font">${question.question}</h3>
+                    <div class="space-y-3">
+                        ${question.options.map((option, index) => `
+                            <button onclick="selectAnswer(${index})" class="quiz-option w-full p-4 text-left border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors serif-font">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = quizData[currentQuizIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Disable all options
+            options.forEach(option => option.disabled = true);
+            
+            // Show correct/incorrect
+            options[selectedIndex].classList.add(selectedIndex === question.correct ? 'correct' : 'incorrect');
+            if (selectedIndex !== question.correct) {
+                options[question.correct].classList.add('correct');
+            }
+            
+            // Update score
+            if (selectedIndex === question.correct) {
+                quizScore++;
+            }
+            
+            // Show explanation
+            setTimeout(() => {
+                const container = document.getElementById('quiz-container');
+                container.innerHTML += `
+                    <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2 serif-font">Explicação:</h4>
+                        <p class="text-blue-700 dark:text-blue-300 text-sm serif-font">${question.explanation}</p>
+                    </div>
+                    
+                    <div class="text-center mt-6">
+                        ${currentQuizIndex < quizData.length - 1 
+                            ? `<button onclick="nextQuestion()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors serif-font">Próxima Pergunta</button>`
+                            : `<button onclick="showQuizResults()" class="bg-secondary text-white px-6 py-2 rounded-lg hover:bg-secondary/90 transition-colors serif-font">Ver Resultados</button>`
+                        }
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            showQuizQuestion();
+        }
+
+        function showQuizResults() {
+            const container = document.getElementById('quiz-container');
+            const percentage = Math.round((quizScore / quizData.length) * 100);
+            let message = '';
+            let colorClass = '';
+            
+            if (percentage >= 80) {
+                message = 'Excelente! Você tem uma boa compreensão dos conceitos de homilética.';
+                colorClass = 'text-green-600';
+            } else if (percentage >= 60) {
+                message = 'Bom trabalho! Continue estudando para aprofundar seus conhecimentos.';
+                colorClass = 'text-blue-600';
+            } else {
+                message = 'Continue estudando. Revise os conceitos fundamentais de homilética.';
+                colorClass = 'text-yellow-600';
+            }
+            
+            container.innerHTML = `
+                <div class="text-center">
+                    <div class="mb-6">
+                        <div class="text-6xl font-bold ${colorClass} mb-4 serif-font">${percentage}%</div>
+                        <h3 class="text-2xl font-semibold mb-2 serif-font">Avaliação Concluída!</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 serif-font">Você acertou ${quizScore} de ${quizData.length} perguntas</p>
+                        <p class="${colorClass} font-medium serif-font">${message}</p>
+                    </div>
+                    
+                    <div class="space-x-4">
+                        <button onclick="startQuiz()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors serif-font">
+                            Tentar Novamente
+                        </button>
+                        <button onclick="resetQuiz()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors serif-font">
+                            Voltar ao Início
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-4 serif-font">Avalie seus conhecimentos sobre Homilética</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 serif-font">
+                        Este quiz contém ${quizData.length} perguntas sobre os principais conceitos estudados.
+                    </p>
+                </div>
+            `;
+            quizStarted = false;
+        }
+
+        // Case study navigation
+        function setupCaseStudyNavigation() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('step-btn')) {
+                    const step = e.target.dataset.step;
+                    const caseStudy = e.target.closest('.case-study-steps');
+                    
+                    // Update active button
+                    caseStudy.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    // Show corresponding content
+                    caseStudy.querySelectorAll('.step-content').forEach(content => content.classList.add('hidden'));
+                    caseStudy.querySelector(`#step-${step}`).classList.remove('hidden');
+                }
+            });
+        }
+
+        // Accordion functionality
+        function setupAccordions() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('accordion-header') || e.target.closest('.accordion-header')) {
+                    const header = e.target.closest('.accordion-header');
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.fa-chevron-down');
+                    
+                    content.classList.toggle('active');
+                    icon.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            });
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const sections = document.querySelectorAll('.content-section');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            // Simple progress based on active section
+            function updateProgressBar() {
+                const activeSection = document.querySelector('.content-section.active');
+                if (activeSection) {
+                    const sectionIndex = Array.from(sections).indexOf(activeSection);
+                    const progress = ((sectionIndex + 1) / sections.length) * 100;
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
                 }
             }
             
-            nav.addEventListener('click', function(event) {
-                event.preventDefault();
-                const target = event.target.closest('.nav-item');
-                if (target) {
-                    const sectionId = target.dataset.section;
-                    updateContent(sectionId);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+            // Update progress when section changes
+            const observer = new MutationObserver(updateProgressBar);
+            sections.forEach(section => {
+                observer.observe(section, { attributes: true, attributeFilter: ['class'] });
             });
+            
+            updateProgressBar(); // Initial update
+        }
 
-            updateContent('compreender');
+        // Mobile menu toggle
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            menuToggle?.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        }
+
+        // Dark mode toggle
+        function setupDarkModeToggle() {
+            const toggle = document.getElementById('darkModeToggle');
+            toggle?.addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            initDarkMode();
+            generateTableOfContents();
+            generateFlashcards();
+            resetQuiz();
+            setupCaseStudyNavigation();
+            setupAccordions();
+            updateProgress();
+            setupMobileMenu();
+            setupDarkModeToggle();
+            
+            // Show welcome section by default
+            showSection('welcome-section');
+            
+            // Add fade-in animation to sections when they become active
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                observer.observe(section);
+            });
         });
     </script>
 </body>
