@@ -201,7 +201,7 @@
                     <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
                         <div class="progress-bar h-3 rounded-full transition-all duration-500" style="width: 0%" id="progress-bar"></div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">13 módulos completos</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400"><span id="module-count">14</span> módulos completos</p>
                 </div>
                 <nav class="space-y-2" id="desktop-nav">
                     <!-- Navigation will be populated by JavaScript -->
@@ -705,7 +705,7 @@
             {
                 id: 5,
                 title: "Exegese e Interpretação",
-                icon: "🔍",
+                icon: "�",
                 content: `
                     <div class="module-card rounded-2xl p-8 mb-8">
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
@@ -901,12 +901,103 @@
             },
             {
                 id: 7,
+                title: "ICT, Tema, Tese e Propósito",
+                icon: "🔗",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🔗 Módulo 7: ICT, Tema, Tese, Propósito e Pergunta Condutora
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a identificar e formular a ICT (Ideia Central do Texto) como fundamento do sermão, conectando-a de maneira clara ao tema, à tese, aos propósitos e à pergunta condutora, garantindo unidade e fidelidade ao texto.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">💡 O que é a ICT (Ideia Central do Texto)?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+                                    A ICT é a <strong>"coluna vertebral"</strong> do sermão. É a frase que expressa, com precisão, a principal lição ensinada pelo texto bíblico, resultado de uma exegese rigorosa.
+                                </p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Toda a estrutura do sermão (tema, tese, divisões, aplicações) nasce e permanece subordinada à ICT.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">⚖️ Critérios para uma boa ICT</h3>
+                             <ul class="space-y-2 text-sm list-disc list-inside">
+                                <li><strong>Exegética e fiel:</strong> Nasce do sentido original da perícope, respeitando todos os contextos (imediato, literário, histórico, etc.).</li>
+                                <li><strong>Concisa e Clara:</strong> Frase curta, com um único verbo principal no passado (máximo de 18 palavras). Ex: "Deus <strong>revelou</strong> Sua fidelidade sustentando Israel no deserto."</li>
+                                <li><strong>Cristocêntrica:</strong> Deve apontar para a pessoa, obra ou promessa de Cristo, de forma natural ao texto.</li>
+                                <li><strong>Sem Generalizações:</strong> Não deve ser uma "moral da história" (ex: "ensinou a ser corajoso"), mas o que Deus fez/ensinou.</li>
+                                <li><strong>Sem Aplicações:</strong> A ICT declara o que o texto ensinou; a aplicação virá depois, no corpo do sermão.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
+                             <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">🗺️ A Jornada do Sermão: Da ICT à Aplicação</h3>
+                             <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">Veja como a Ideia Central do Texto (ICT) se desdobra em todos os outros elementos essenciais do sermão, garantindo unidade e foco.</p>
+                             <div class="space-y-4">
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <p class="font-bold text-green-700 dark:text-green-300">1. ICT (A Fundação)</p>
+                                    <p class="text-sm italic text-gray-600 dark:text-gray-400">"Deus <strong>anunciou</strong> Cristo ao prover o cordeiro substituto no lugar de Isaque."</p>
+                                </div>
+                                <div class="text-center text-green-500 text-2xl">↓</div>
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <p class="font-bold text-green-700 dark:text-green-300">2. Tema (O Título)</p>
+                                    <p class="text-sm italic text-gray-600 dark:text-gray-400">"O Deus que Provê o Cordeiro"</p>
+                                </div>
+                                <div class="text-center text-green-500 text-2xl">↓</div>
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <p class="font-bold text-green-700 dark:text-green-300">3. Tese (A Verdade para Hoje)</p>
+                                    <p class="text-sm italic text-gray-600 dark:text-gray-400">"Deus <strong>provê</strong> o Cordeiro, Jesus, como nosso substituto para nos salvar."</p>
+                                </div>
+                                <div class="text-center text-green-500 text-2xl">↓</div>
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <p class="font-bold text-green-700 dark:text-green-300">4. Pergunta Condutora (O Guia)</p>
+                                    <p class="text-sm italic text-gray-600 dark:text-gray-400">"Como Deus revela Seu Cordeiro sacrificial neste texto?"</p>
+                                </div>
+                                 <div class="text-center text-green-500 text-2xl">↓</div>
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <p class="font-bold text-green-700 dark:text-green-300">5. Pontos Principais (As Respostas)</p>
+                                    <ul class="text-sm italic text-gray-600 dark:text-gray-400 list-disc list-inside">
+                                        <li>Apontando para o Pai que entrega o Filho.</li>
+                                        <li>Prefigurando a submissão de Cristo.</li>
+                                        <li>Revelando Cristo como sacrifício definitivo.</li>
+                                    </ul>
+                                </div>
+                             </div>
+                        </div>
+                        
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">A ICT (Ideia Central do Texto) deve ser uma frase com verbo no...</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Presente, para ser relevante.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Passado, para ser fiel ao que o texto ensinou.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Futuro, para gerar esperança.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
                 title: "Definição de Propósitos",
                 icon: "🎯",
                 content: `
                     <div class="module-card rounded-2xl p-8 mb-8">
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-                            🎯 Módulo 7: Definição de Propósitos na Pregação
+                            🎯 Módulo 8: Definição de Propósitos na Pregação
                         </h1>
                         
                         <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
@@ -965,88 +1056,6 @@
                                     </div>
                                     <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
                                         <span class="text-gray-700 dark:text-gray-300">✓ Focado apenas em ensinar fatos</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                id: 8,
-                title: "ICT, Tema, Tese e Propósito",
-                icon: "🔗",
-                content: `
-                    <div class="module-card rounded-2xl p-8 mb-8">
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-                            🔗 Módulo 8: ICT, Tema, Tese, Propósito e Pergunta Condutora
-                        </h1>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
-                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
-                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a identificar e formular a ICT (Ideia Central do Texto) como fundamento do sermão, conectando-a de maneira clara ao tema, à tese, aos propósitos e à pergunta condutora, garantindo unidade e fidelidade ao texto.</p>
-                        </div>
-
-                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-xl p-6 mb-8">
-                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">💡 O que é a ICT (Ideia Central do Texto)?</h3>
-                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
-                                    A ICT é a <strong>"coluna vertebral"</strong> do sermão. É a frase que expressa, com precisão, a principal lição ensinada pelo texto bíblico, resultado de uma exegese rigorosa.
-                                </p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Toda a estrutura do sermão (tema, tese, divisões, aplicações) nasce e permanece subordinada à ICT.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
-                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">⚖️ Critérios para uma boa ICT</h3>
-                             <ul class="space-y-2 text-sm list-disc list-inside">
-                                <li><strong>Exegética e fiel:</strong> Nasce do sentido original da perícope.</li>
-                                <li><strong>Concisa:</strong> Frase curta, com verbo no passado (máx. 18 palavras). Ex: "Deus <strong>revelou</strong> Sua fidelidade...".</li>
-                                <li><strong>Cristocêntrica:</strong> Aponta para a pessoa, obra ou promessa de Cristo.</li>
-                                <li><strong>Sem generalizações:</strong> Não é uma "moral da história", mas o que Deus fez/ensinou.</li>
-                                <li><strong>Sem aplicações:</strong> A aplicação virá depois, no corpo do sermão.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
-                             <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">🔄 Da ICT para a Tese</h3>
-                             <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">A Tese transforma a ICT (o que Deus fez no passado) em uma verdade para a igreja hoje.</p>
-                             <div class="grid md:grid-cols-2 gap-4">
-                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">📖 ICT (Passado)</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm italic">"Deus <strong>anunciou</strong> Cristo ao prover o cordeiro substituto no lugar de Isaque." (Gn 22)</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">📜 Tese (Presente/Futuro)</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm italic">"Deus <strong>provê</strong> o Cordeiro, Jesus, como nosso substituto para nos salvar."</p>
-                                </div>
-                             </div>
-                        </div>
-
-                        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-6 mb-8">
-                            <h3 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">🔗 A Estrutura Completa</h3>
-                            <ol class="space-y-3 list-decimal list-inside">
-                                <li><strong>ICT:</strong> O que o texto ensinou de fato (verbo no passado).</li>
-                                <li><strong>Tema:</strong> Título curto, memorável e fiel à ICT.</li>
-                                <li><strong>Tese:</strong> ICT transformada em proposição para a igreja hoje.</li>
-                                <li><strong>Propósito:</strong> O que Deus deseja provocar na vida dos ouvintes.</li>
-                                <li><strong>Pergunta Condutora:</strong> Questão que surge do tema e governa os pontos do sermão.</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
-                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
-                            <div class="quiz-question mb-4">
-                                <p class="font-medium text-gray-800 dark:text-white mb-4">A ICT (Ideia Central do Texto) deve ser uma frase com verbo no...</p>
-                                <div class="space-y-2">
-                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
-                                        <span class="text-gray-700 dark:text-gray-300">✓ Presente, para ser relevante.</span>
-                                    </div>
-                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
-                                        <span class="text-gray-700 dark:text-gray-300">✓ Passado, para ser fiel ao que o texto ensinou.</span>
-                                    </div>
-                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
-                                        <span class="text-gray-700 dark:text-gray-300">✓ Futuro, para gerar esperança.</span>
                                     </div>
                                 </div>
                             </div>
@@ -1467,6 +1476,45 @@
                         </div>
                     </div>
                 `
+            },
+            {
+                id: 14,
+                title: "Referências Comentadas",
+                icon: "📚",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            📚 Módulo 14: Referências Comentadas
+                        </h1>
+                        <div class="space-y-8">
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                                <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">Homilética: da pesquisa ao púlpito</h3>
+                                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-4">Autor: Jilton Moraes</p>
+                                <p class="text-gray-600 dark:text-gray-400"><strong>Comentário:</strong> Obra-base para todo o curso, é um guia prático e didático para quem deseja preparar e pregar sermões bíblicos, expositivos e relevantes. Jilton Moraes alia experiência pastoral a sólida metodologia, com capítulos curtos, exemplos práticos e exercícios, tornando a arte homilética acessível. Seu maior mérito é valorizar o equilíbrio entre rigor bíblico e sensibilidade pastoral.</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                                <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">Pregação Pura e Simples</h3>
+                                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-4">Autor: Stuart Olyott</p>
+                                <p class="text-gray-600 dark:text-gray-400"><strong>Comentário:</strong> Um clássico contemporâneo da tradição reformada, este livro oferece uma visão clara, concisa e profundamente bíblica sobre o que é pregar e como fazê-lo com fidelidade e eficácia. Olyott destaca a importância da exegese, da estrutura, da aplicação e, principalmente, do preparo espiritual do pregador.</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                                <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">Pregação Cristocêntrica</h3>
+                                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-4">Autor: Bryan Chapell</p>
+                                <p class="text-gray-600 dark:text-gray-400"><strong>Comentário:</strong> Referência mundial sobre pregação centrada na graça e na obra redentora de Cristo, Chapell ensina a construir sermões expositivos que não apenas informam, mas transformam. O livro é notável por seu equilíbrio entre teoria e prática, com ênfase especial na unidade do sermão e na aplicação cristocêntrica.</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                                <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">Pregação Expositiva</h3>
+                                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-4">Autor: Hernandes Dias Lopes</p>
+                                <p class="text-gray-600 dark:text-gray-400"><strong>Comentário:</strong> Nesta obra, Hernandes Dias Lopes defende com paixão a centralidade da pregação bíblica para o avivamento e crescimento saudável da igreja. O livro é prático, pastoral e inspirador, enfatizando a autoridade da Escritura, o valor do preparo diligente e a necessidade de relevância para a vida da igreja.</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                                <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">Pregando toda a Bíblia como Escritura Cristã</h3>
+                                <p class="font-semibold text-gray-700 dark:text-gray-300 mb-4">Autor: Graeme Goldsworthy</p>
+                                <p class="text-gray-600 dark:text-gray-400"><strong>Comentário:</strong> Goldsworthy é um dos maiores especialistas em teologia bíblica e sua obra é referência para quem deseja entender como toda a Bíblia aponta para Cristo. O livro ensina o pregador a fazer a ponte entre Antigo e Novo Testamento e a ler e pregar as Escrituras de forma canônica. Essencial para fundamentar o sermão na unidade da revelação.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
             }
         ];
 
@@ -1491,6 +1539,7 @@
             
             desktopNav.innerHTML = navHTML;
             mobileNav.innerHTML = navHTML;
+            document.getElementById('module-count').textContent = modules.length;
         }
 
         function showModule(moduleId) {
@@ -1590,7 +1639,7 @@
                 <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     <div class="card-hover bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                         <div class="text-4xl mb-4">📚</div>
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">13 Módulos</h3>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">14 Módulos</h3>
                         <p class="text-gray-600 dark:text-gray-400">Conteúdo completo e estruturado</p>
                     </div>
                     <div class="card-hover bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
@@ -1612,3 +1661,4 @@
     </script>
 </body>
 </html>
+�
