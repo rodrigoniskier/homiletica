@@ -1,10 +1,1614 @@
-A Relação entre ICT, Tema, Tese, Propósito e Pergunta Condutora
-ICT: O que o texto ensinou de fato (verbo no passado).
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilética Digital - Curso Completo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-blue: #5D5CDE;
+            --success-green: #22C55E;
+            --warning-yellow: #FFC107;
+            --light-bg: #FFFFFF;
+            --dark-bg: #181818;
+        }
 
-Tema: Título curto, memorável e fiel à ICT.
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
-Tese: ICT transformada em proposição para a igreja hoje (verbo no futuro ou presente, voltado à ação de Deus na igreja).
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3B82F6 100%);
+        }
 
-Propósito: O que Deus deseja provocar na vida dos ouvintes (básico e específico, definidos por verbos claros).
+        .card-hover {
+            transition: all 0.3s ease;
+        }
 
-Pergunta Condutora: Questão que surge do tema e governa os pontos do sermão, conectando toda a estrutura à ICT.
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(93, 92, 222, 0.15);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--success-green) 0%, var(--warning-yellow) 100%);
+        }
+
+        .module-active {
+            background: linear-gradient(135deg, var(--primary-blue), #3B82F6);
+            color: white;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .content-area {
+            min-height: calc(100vh - 140px);
+        }
+
+        .module-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .quiz-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quiz-option:hover {
+            background-color: rgba(93, 92, 222, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-option.correct {
+            background-color: rgba(34, 197, 94, 0.1);
+            border-color: var(--success-green);
+        }
+
+        .quiz-option.incorrect {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: #EF4444;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            height: 200px;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--primary-blue), #3B82F6);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--success-green), #16A34A);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .dark {
+            --light-bg: #181818;
+        }
+
+        .dark .module-card {
+            background: linear-gradient(135deg, rgba(24,24,24,0.9) 0%, rgba(24,24,24,0.7) 100%);
+            color: #E5E7EB;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="text-2xl md:text-3xl font-bold">📖 Homilética Digital</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
+                        <i class="fas fa-trophy text-yellow-300"></i>
+                        <span class="text-sm font-medium">Progresso: <span id="progress-text">0%</span></span>
+                    </div>
+                    <button onclick="toggleDarkMode()" class="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors">
+                        <i id="dark-mode-icon" class="fas fa-moon text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu fixed inset-y-0 left-0 w-80 bg-white dark:bg-gray-800 shadow-lg z-40 md:hidden">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">📚 Módulos</h2>
+                <button onclick="toggleMobileMenu()" class="text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <nav class="p-4" id="mobile-nav">
+            <!-- Mobile navigation will be populated by JavaScript -->
+        </nav>
+    </div>
+
+    <div class="flex">
+        <!-- Sidebar Desktop -->
+        <aside class="hidden md:block w-80 bg-white dark:bg-gray-800 shadow-lg min-h-screen">
+            <div class="p-6">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">📚 Módulos do Curso</h2>
+                    <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
+                        <div class="progress-bar h-3 rounded-full transition-all duration-500" style="width: 0%" id="progress-bar"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">13 módulos completos</p>
+                </div>
+                <nav class="space-y-2" id="desktop-nav">
+                    <!-- Navigation will be populated by JavaScript -->
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8 content-area">
+            <div id="content" class="fade-in">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-8">
+                <p class="text-sm">
+                    <i class="fas fa-code text-blue-400"></i>
+                    Desenvolvido por <span class="font-semibold text-blue-400">Rodrigo Niskier</span>
+                </p>
+                <p class="text-sm">
+                    <i class="fas fa-robot text-green-400"></i>
+                    Aprimorado por <span class="font-semibold text-green-400">IA</span>
+                </p>
+                <p class="text-sm">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    Baseado em <span class="font-semibold text-yellow-400">Autores Reformados</span>
+                </p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400">© 2024 Homilética Digital. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode functionality
+        const darkModeIcon = document.getElementById('dark-mode-icon');
+        if (localStorage.getItem('darkMode') === 'enabled' || 
+            (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.toggle('dark')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.querySelector('.mobile-menu');
+            menu.classList.toggle('open');
+        }
+
+        // Module data
+        const modules = [
+            {
+                id: 1,
+                title: "Introdução à Homilética",
+                icon: "🎯",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🎯 Módulo 1: Introdução à Homilética
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Compreender o que é homilética, sua importância histórica, bíblica e prática para a vida da igreja, bem como os fundamentos teológicos que sustentam a arte e ciência da pregação bíblica.</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div>
+                                            <h4 class="text-xl font-bold mb-2">💡 O que é Homilética?</h4>
+                                            <p class="text-sm">Clique para descobrir</p>
+                                        </div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div>
+                                            <p class="text-sm font-medium">"A ciência e arte de preparar e proclamar sermões, estudando princípios e métodos para a exposição fiel da Palavra de Deus"</p>
+                                            <p class="text-xs mt-2">- Jilton Moraes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div>
+                                            <h4 class="text-xl font-bold mb-2">⚖️ Ciência + Arte</h4>
+                                            <p class="text-sm">Clique para entender</p>
+                                        </div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div>
+                                            <p class="text-sm font-medium"><strong>Ciência:</strong> regras, métodos e estrutura</p>
+                                            <p class="text-sm font-medium"><strong>Arte:</strong> criatividade, sensibilidade e aplicação</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-yellow-50 dark:from-green-900/30 dark:to-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">📖 Fundamento Bíblico</h3>
+                            <p class="text-gray-700 dark:text-gray-300 mb-4 text-sm">O Novo Testamento descreve a pregação com vários verbos. O pregador é um arauto que não fala por si, mas transmite a mensagem de Deus com fidelidade.</p>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">📢</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Kerusso</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">"Proclamar"</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">📰</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Euangelizo</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">"Anunciar boas-novas"</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">👨‍⚖️</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Arauto</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Mensageiro de Deus</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">⭐ Citações Importantes</h3>
+                            <div class="space-y-4">
+                                <blockquote class="border-l-4 border-yellow-500 pl-4 italic text-yellow-700 dark:text-yellow-200">
+                                    "A pregação é o meio que Deus usa para vivificar os mortos e edificar os vivos. Onde Deus age, ali a pregação floresce."
+                                    <footer class="text-sm font-semibold mt-2">- Stuart Olyott</footer>
+                                </blockquote>
+                                <blockquote class="border-l-4 border-yellow-500 pl-4 italic text-yellow-700 dark:text-yellow-200">
+                                    "A igreja evangélica necessita desesperadamente de uma pregação revitalizada... Um reavivamento no púlpito e nos bancos é absolutamente necessário."
+                                    <footer class="text-sm font-semibold mt-2">- Hernandes Dias Lopes</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">Segundo Jilton Moraes, homilética é apenas uma ciência?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Sim, apenas uma ciência com regras fixas</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Não, é ciência E arte</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ É apenas uma arte criativa</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                title: "Fundamentos Espirituais",
+                icon: "🙏",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🙏 Módulo 2: Fundamentos Espirituais da Pregação
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Levar o estudante a compreender e valorizar a preparação espiritual como pré-requisito indispensável para a pregação fiel e frutífera, reconhecendo que o púlpito começa no quarto de oração, não no gabinete de estudos.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">💡 Lição-Chave</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 italic">
+                                    "O sermão começa no relacionamento do pregador com Deus, e não nas páginas em branco do esboço."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center">
+                                    <i class="fas fa-book-open mr-3"></i> Gabinete de Estudos
+                                </h4>
+                                <p class="text-green-700 dark:text-green-200 text-sm mb-4">
+                                    "O trabalho no gabinete de estudos faz o pregador crescer espiritualmente e lhe dá condições de conhecer e aplicar as técnicas mais adequadas."
+                                </p>
+                                <p class="text-xs text-green-600 dark:text-green-400 font-semibold">- Jilton Moraes</p>
+                            </div>
+
+                            <div class="bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-orange-800 dark:text-orange-300 mb-4 flex items-center">
+                                    <i class="fas fa-heart mr-3"></i> Vida com Deus
+                                </h4>
+                                <p class="text-orange-700 dark:text-orange-200 text-sm mb-4">
+                                    "A vida do ministro é a vida do seu ministério... Pregadores rasos pregam sermões rasos. A igreja sente o cheiro da alma do pregador."
+                                </p>
+                                <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">- Hernandes Dias Lopes</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">🚫 Perigos a Evitar</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <div class="flex items-center space-x-3 p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                                        <span class="text-red-500 text-xl">🤖</span>
+                                        <span class="text-red-700 dark:text-red-300 font-medium">Automatismo</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3 p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                                        <span class="text-red-500 text-xl">🏜️</span>
+                                        <span class="text-red-700 dark:text-red-300 font-medium">Seca Espiritual</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex items-center space-x-3 p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                                        <span class="text-red-500 text-xl">🏃‍♂️</span>
+                                        <span class="text-red-700 dark:text-red-300 font-medium">Ativismo</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3 p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                                        <span class="text-red-500 text-xl">👑</span>
+                                        <span class="text-red-700 dark:text-red-300 font-medium">Orgulho</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">✅ Práticas Espirituais Essenciais</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-3">🙏</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Oração Diária</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Pelo texto, pela igreja, por si mesmo</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-3">📖</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Leitura Devocional</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Não apenas estudo técnico</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-3">💧</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Jejum e Confissão</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Regular e sincera</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">Qual é a prioridade do pregador, segundo Stuart Olyott?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ser um preparador de sermões</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ser um instrumento de fazer santos</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ser um bom orador</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                title: "Preparação do Pregador",
+                icon: "💡",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            💡 Módulo 3: Preparação do Pregador
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Despertar no pregador o hábito constante de renovar seu coração, mente e repertório de ideias, reconhecendo sua dependência da sabedoria do alto para uma pregação viva, relevante e fiel ao texto bíblico e ao contexto dos ouvintes.</p>
+                        </div>
+
+                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-red-800 dark:text-red-300 mb-4 flex items-center">
+                                ⚠️ O Perigo da Repetição
+                            </h3>
+                            <blockquote class="border-l-4 border-red-500 pl-4 italic text-red-700 dark:text-red-200">
+                                "Se não estiver atento ao cultivo de novas ideias, o pregador repetirá os mesmos assuntos, sentir-se-á desmotivado e terminará estressado. É preciso buscar sabedoria do Alto para não se esgotar."
+                                <footer class="text-sm font-semibold mt-2">- Jilton Moraes</footer>
+                            </blockquote>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div>
+                                            <h4 class="text-xl font-bold mb-2">📖 Tiago 1:5</h4>
+                                            <p class="text-sm">Clique para ler</p>
+                                        </div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div>
+                                            <p class="text-sm font-medium">"Se, porém, algum de vós necessita de sabedoria, peça-a a Deus, que a todos dá liberalmente..."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div>
+                                            <h4 class="text-xl font-bold mb-2">💡 Lição-Chave</h4>
+                                            <p class="text-sm">Clique para descobrir</p>
+                                        </div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div>
+                                            <p class="text-sm font-medium">O esgotamento de temas não é falta de Bíblia, mas de busca e sensibilidade ao Espírito.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">🌱 Alimentando a Mente e o Coração</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <ul class="space-y-2">
+                                    <li class="flex items-center"><i class="fas fa-book-reader text-green-500 mr-2"></i> Leitura regular das Escrituras</li>
+                                    <li class="flex items-center"><i class="fas fa-feather-alt text-green-500 mr-2"></i> Livros e artigos diversos</li>
+                                    <li class="flex items-center"><i class="fas fa-music text-green-500 mr-2"></i> Música e arte</li>
+                                </ul>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center"><i class="fas fa-newspaper text-green-500 mr-2"></i> Notícias e cultura</li>
+                                    <li class="flex items-center"><i class="fas fa-users text-green-500 mr-2"></i> Diálogo com líderes e ouvintes</li>
+                                    <li class="flex items-center"><i class="fas fa-lightbulb text-green-500 mr-2"></i> Caderno de ideias</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">💡 Sugestão Prática</h3>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                    <strong>Mantenha um caderno ou aplicativo</strong> para registrar:
+                                </p>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400 text-sm">
+                                    <li>Ideias e insights que surgem na leitura</li>
+                                    <li>Perguntas e dúvidas dos membros</li>
+                                    <li>Histórias e ilustrações marcantes</li>
+                                    <li>Frases de impacto de livros ou palestras</li>
+                                    <li>Notícias relevantes e sua conexão com a fé</li>
+                                    <li>Temas que emergem em conversas e aconselhamentos</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">O que causa o esgotamento de temas na pregação?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ A Bíblia ter poucos temas</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Falta de busca e sensibilidade ao Espírito</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Excesso de preparo intelectual</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                title: "Fundamentos Bíblicos",
+                icon: "📖",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            📖 Módulo 4: Fundamentos Bíblicos da Pregação
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Conduzir o estudante à compreensão de que a pregação autêntica é, acima de tudo, a comunicação fiel da Palavra de Deus, fundamentada na autoridade, suficiência, inerrância e centralidade das Escrituras.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/30 dark:to-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">📢 O Que é Pregação?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <blockquote class="text-lg font-medium text-gray-700 dark:text-gray-300 italic mb-4">
+                                    "Pregação é a comunicação da Palavra de Deus, com aplicação para o presente e desafios para o futuro. Sem interpretação da Palavra, sem aplicação e sem desafios, não há pregação."
+                                </blockquote>
+                                <footer class="text-sm font-semibold text-blue-600 dark:text-blue-400">- Jilton Moraes</footer>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6 text-center">
+                                <div class="text-4xl mb-4">⚖️</div>
+                                <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-3">Autoridade</h4>
+                                <p class="text-green-700 dark:text-green-200 text-sm">
+                                    O púlpito só tem valor se fundamentado na autoridade do texto bíblico. A autoridade do sermão deriva do texto.
+                                </p>
+                            </div>
+
+                            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-6 text-center">
+                                <div class="text-4xl mb-4">✅</div>
+                                <h4 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-3">Suficiência</h4>
+                                <p class="text-blue-700 dark:text-blue-200 text-sm">
+                                    Toda Escritura é suficiente para ensino, repreensão, correção e instrução (2Tm 3.16).
+                                </p>
+                            </div>
+
+                            <div class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-xl p-6 text-center">
+                                <div class="text-4xl mb-4">🎯</div>
+                                <h4 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-3">Inerrância</h4>
+                                <p class="text-purple-700 dark:text-purple-200 text-sm">
+                                    As Escrituras são perfeitas, verdadeiras e confiáveis em tudo o que afirmam.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">✝️ Cristo: O Centro das Escrituras</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <blockquote class="border-l-4 border-yellow-500 pl-4 italic text-yellow-700 dark:text-yellow-200">
+                                    "Toda a Bíblia é cristocêntrica -- Cristo é a chave hermenêutica e o cumprimento da revelação."
+                                    <footer class="text-sm font-semibold mt-2">- Graeme Goldsworthy</footer>
+                                </blockquote>
+                                <blockquote class="border-l-4 border-yellow-500 pl-4 italic text-yellow-700 dark:text-yellow-200">
+                                    "Sermão expositivo deve ser 'redentor', ligando o ouvinte à obra consumada de Cristo."
+                                    <footer class="text-sm font-semibold mt-2">- Bryan Chapell</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-red-800 dark:text-red-300 mb-4">⚠️ Desafios Contemporâneos</h3>
+                            <p class="text-red-700 dark:text-red-300 mb-4 text-sm">Muitas igrejas têm substituído a exposição fiel das Escrituras por...</p>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">🎭</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Entretenimento</h4>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">💭</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Subjetivismo</h4>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-2">🛠️</div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Autoajuda</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">A pregação fiel é uma ideia sobre o texto ou o texto dando sua ideia?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Uma ideia sobre o texto</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ O texto dando sua ideia</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ambos estão corretos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                title: "Exegese e Interpretação",
+                icon: "🔍",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🔍 Módulo 5: Exegese e Interpretação do Texto
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a compreender, aplicar e praticar o método exegético histórico-gramatical, visando uma interpretação fiel, responsável e relevante do texto bíblico para a pregação expositiva.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🔍 O Que é Exegese?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+                                    <strong>Exegese</strong> é a busca rigorosa do sentido original do texto, considerando linguagem, contexto, intenção autoral, gramática e história.
+                                </p>
+                                <blockquote class="border-l-4 border-blue-500 pl-4 italic text-blue-700 dark:text-blue-200">
+                                    "A capacidade de interpretar corretamente as Escrituras é fundamental à boa pregação."
+                                    <footer class="text-sm font-semibold mt-2">- Jilton Moraes</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">📋 Etapas Práticas da Exegese</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <ol class="space-y-3 list-decimal list-inside text-gray-700 dark:text-gray-300">
+                                    <li><strong>Leitura Atenta:</strong> Várias vezes, em diferentes traduções.</li>
+                                    <li><strong>Análise Lexical:</strong> Significado das palavras-chave no original.</li>
+                                    <li><strong>Análise Sintática:</strong> Estrutura lógica das frases.</li>
+                                    <li><strong>Análise Contextual:</strong> Quem, para quem, quando, por quê?</li>
+                                </ol>
+                                <ol class="space-y-3 list-decimal list-inside text-gray-700 dark:text-gray-300" start="5">
+                                    <li><strong>Análise Literária:</strong> Gênero (narrativa, poesia, etc.).</li>
+                                    <li><strong>Análise Teológica:</strong> Doutrinas presentes e conexão com Cristo.</li>
+                                    <li><strong>Problemas Exegéticos:</strong> Dificuldades textuais, ambiguidades.</li>
+                                    <li><strong>Aplicação Exegética:</strong> Aplicações fiéis ao sentido original.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">🛠️ Ferramentas para Exegese</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">📖</div><h4 class="font-semibold text-sm">Bíblias de Estudo</h4>
+                                </div>
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">📚</div><h4 class="font-semibold text-sm">Dicionários/Léxicos</h4>
+                                </div>
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">📝</div><h4 class="font-semibold text-sm">Gramáticas</h4>
+                                </div>
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">💬</div><h4 class="font-semibold text-sm">Comentários</h4>
+                                </div>
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">🔍</div><h4 class="font-semibold text-sm">Concordâncias</h4>
+                                </div>
+                                <div class="text-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-2xl mb-1">💻</div><h4 class="font-semibold text-sm">Softwares Bíblicos</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">O que significa buscar a "intenção autoral" na exegese?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ O que o texto significa para mim hoje.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ O que o autor humano, inspirado, quis comunicar à sua audiência original.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Encontrar significados ocultos e místicos no texto.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                title: "Contextualização",
+                icon: "🌍",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🌍 Módulo 6: Contextualização da Mensagem
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o pregador a conectar o sentido original do texto bíblico com a realidade contemporânea dos ouvintes, tornando a exposição bíblica relevante, atual e transformadora, sem perder sua fidelidade ao texto e à teologia bíblica.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🔄 A Dupla Escuta</h3>
+                            <blockquote class="text-center text-lg italic text-gray-700 dark:text-gray-200 mb-4">"O bom pregador estuda com zelo não apenas o texto de sua mensagem, mas estuda com amor as pessoas que o ouvirão." - Jilton Moraes</blockquote>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                    <div class="text-4xl mb-4">📖</div>
+                                    <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Escutar o Texto</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">O que Deus disse através do autor inspirado</p>
+                                </div>
+                                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                    <div class="text-4xl mb-4">👥</div>
+                                    <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Escutar o Povo</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">As necessidades e realidades dos ouvintes</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">💡 O Que É Contextualizar?</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-green-700 dark:text-green-300 flex items-center"><i class="fas fa-check-circle mr-2"></i> Contextualizar É:</h4>
+                                    <ul class="space-y-2 text-sm list-disc list-inside">
+                                        <li>Aplicar verdades imutáveis às situações atuais.</li>
+                                        <li>Conectar o texto com dilemas contemporâneos.</li>
+                                        <li>Tornar a mensagem relevante e transformadora.</li>
+                                    </ul>
+                                </div>
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-red-700 dark:text-red-300 flex items-center"><i class="fas fa-times-circle mr-2"></i> Contextualizar NÃO É:</h4>
+                                    <ul class="space-y-2 text-sm list-disc list-inside">
+                                        <li>Adaptar a Palavra para agradar.</li>
+                                        <li>Relativizar ou diluir o conteúdo.</li>
+                                        <li>Seguir modismos superficiais.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div><h4 class="text-lg font-bold mb-2">📖 Exemplo 1</h4><p class="text-sm">Israel no deserto</p></div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div><p class="text-sm font-medium"><strong>Aplicação:</strong> Frustração moderna, murmuração, busca de sentido, tentação ao desânimo.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div><h4 class="text-lg font-bold mb-2">✝️ Exemplo 2</h4><p class="text-sm">Ensino sobre perdão</p></div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div><p class="text-sm font-medium"><strong>Aplicação:</strong> Mágoa, divórcio, polarização, cultura do cancelamento.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flashcard" onclick="flipCard(this)">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div><h4 class="text-lg font-bold mb-2">⚖️ Exemplo 3</h4><p class="text-sm">Justiça social (AT)</p></div>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <div><p class="text-sm font-medium"><strong>Aplicação:</strong> Corrupção, pobreza, racismo, desigualdade social.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">A pregação fiel exige uma dupla escuta. Quais são elas?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Escutar comentários e escutar tradições</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Escutar o texto e escutar os ouvintes</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Escutar o original e escutar traduções</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                title: "Definição de Propósitos",
+                icon: "🎯",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🎯 Módulo 7: Definição de Propósitos na Pregação
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Habilitar o pregador a identificar, formular e comunicar com clareza o propósito central de cada sermão, distinguindo entre propósito básico, propósito específico e o alvo pastoral, evangelístico, exortativo, de consolo ou ensino.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-yellow-50 dark:from-green-900/30 dark:to-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">❓ Por Que Definir o Propósito?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <blockquote class="text-lg font-medium text-gray-700 dark:text-gray-300 italic mb-4">
+                                    "A definição do propósito é um dos principais fundamentos para a elaboração de uma mensagem relevante, bíblica e eficaz."
+                                </blockquote>
+                                <footer class="text-sm font-semibold text-green-600 dark:text-green-400">- Jilton Moraes</footer>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-4">A ausência de propósito resulta em sermões dispersos, sem aplicação clara e sem desafio ao ouvinte.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4 flex items-center"><i class="fas fa-bullseye mr-3"></i> Propósito Básico</h4>
+                                <p class="text-blue-700 dark:text-blue-200 text-sm mb-4">O alvo mais amplo e fundamental do sermão.</p>
+                                <div class="space-y-2 text-sm">
+                                    <p>• Evangelizar, edificar, consolar, exortar, corrigir, ensinar, chamar ao arrependimento, consagrar.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center"><i class="fas fa-check-double mr-3"></i> Propósito Específico</h4>
+                                <p class="text-green-700 dark:text-green-200 text-sm mb-4">O comportamento concreto e mensurável esperado dos ouvintes.</p>
+                                <div class="space-y-2 text-sm">
+                                    <p>• Ex: Perdoar um inimigo, restaurar um casamento, confiar na providência de Deus em meio à crise.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">📋 Passos para Definir o Propósito</h3>
+                            <ol class="space-y-3 list-decimal list-inside">
+                                <li><strong>Descoberta no Texto:</strong> O propósito nunca é inventado, mas descoberto no próprio texto bíblico, a partir da intenção do autor inspirado.</li>
+                                <li><strong>Formulação Clara e Simples:</strong> Escreva o propósito em uma frase direta e objetiva, usando verbo no infinitivo (ex: "desafiar a igreja a confiar...").</li>
+                                <li><strong>Propósito Pastor-Cristocêntrico:</strong> O propósito deve ser pastoral e centrado em Cristo, não apenas moral ou comportamental.</li>
+                            </ol>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">O propósito do sermão deve ser:</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Inventado pelo pregador para ser criativo</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Descoberto no próprio texto bíblico</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Focado apenas em ensinar fatos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                title: "ICT, Tema, Tese e Propósito",
+                icon: "🔗",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🔗 Módulo 8: ICT, Tema, Tese, Propósito e Pergunta Condutora
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a identificar e formular a ICT (Ideia Central do Texto) como fundamento do sermão, conectando-a de maneira clara ao tema, à tese, aos propósitos e à pergunta condutora, garantindo unidade e fidelidade ao texto.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">💡 O que é a ICT (Ideia Central do Texto)?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+                                    A ICT é a <strong>"coluna vertebral"</strong> do sermão. É a frase que expressa, com precisão, a principal lição ensinada pelo texto bíblico, resultado de uma exegese rigorosa.
+                                </p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Toda a estrutura do sermão (tema, tese, divisões, aplicações) nasce e permanece subordinada à ICT.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">⚖️ Critérios para uma boa ICT</h3>
+                             <ul class="space-y-2 text-sm list-disc list-inside">
+                                <li><strong>Exegética e fiel:</strong> Nasce do sentido original da perícope.</li>
+                                <li><strong>Concisa:</strong> Frase curta, com verbo no passado (máx. 18 palavras). Ex: "Deus <strong>revelou</strong> Sua fidelidade...".</li>
+                                <li><strong>Cristocêntrica:</strong> Aponta para a pessoa, obra ou promessa de Cristo.</li>
+                                <li><strong>Sem generalizações:</strong> Não é uma "moral da história", mas o que Deus fez/ensinou.</li>
+                                <li><strong>Sem aplicações:</strong> A aplicação virá depois, no corpo do sermão.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
+                             <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">🔄 Da ICT para a Tese</h3>
+                             <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">A Tese transforma a ICT (o que Deus fez no passado) em uma verdade para a igreja hoje.</p>
+                             <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">📖 ICT (Passado)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm italic">"Deus <strong>anunciou</strong> Cristo ao prover o cordeiro substituto no lugar de Isaque." (Gn 22)</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-2">📜 Tese (Presente/Futuro)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm italic">"Deus <strong>provê</strong> o Cordeiro, Jesus, como nosso substituto para nos salvar."</p>
+                                </div>
+                             </div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">🔗 A Estrutura Completa</h3>
+                            <ol class="space-y-3 list-decimal list-inside">
+                                <li><strong>ICT:</strong> O que o texto ensinou de fato (verbo no passado).</li>
+                                <li><strong>Tema:</strong> Título curto, memorável e fiel à ICT.</li>
+                                <li><strong>Tese:</strong> ICT transformada em proposição para a igreja hoje.</li>
+                                <li><strong>Propósito:</strong> O que Deus deseja provocar na vida dos ouvintes.</li>
+                                <li><strong>Pergunta Condutora:</strong> Questão que surge do tema e governa os pontos do sermão.</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">A ICT (Ideia Central do Texto) deve ser uma frase com verbo no...</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Presente, para ser relevante.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Passado, para ser fiel ao que o texto ensinou.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Futuro, para gerar esperança.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                title: "Introdução do Sermão",
+                icon: "🚀",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🚀 Módulo 9: Introdução do Sermão
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Ensinar o pregador a elaborar introduções que contextualizem o texto, despertem interesse, revelem o tema, sejam relevantes e, sobretudo, conduzam naturalmente a exposição do texto bíblico.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🌉 A Introdução como Ponte</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <blockquote class="text-lg font-medium text-gray-700 dark:text-gray-300 italic mb-4">
+                                    "A introdução tem o papel de conquistar a atenção do ouvinte, contextualizar o texto e apresentar o tema do sermão de forma clara e atraente."
+                                </blockquote>
+                                <footer class="text-sm font-semibold text-green-600 dark:text-green-400">- Jilton Moraes</footer>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4 flex items-center"><i class="fas fa-check-double mr-3"></i> Elementos Essenciais</h4>
+                                <ul class="space-y-2 list-disc list-inside">
+                                    <li><strong>Contextualização:</strong> Situa o texto no seu contexto bíblico, literário e histórico.</li>
+                                    <li><strong>Engajamento:</strong> Prende a atenção com histórias, perguntas, fatos.</li>
+                                    <li><strong>Relevância:</strong> Mostra por que o assunto é importante para a vida prática.</li>
+                                    <li><strong>Conexão com o Tema:</strong> Aponta para a ideia central do sermão.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-red-800 dark:text-red-300 mb-4 flex items-center"><i class="fas fa-exclamation-triangle mr-3"></i> Erros a Evitar</h4>
+                                <ul class="space-y-2 list-disc list-inside">
+                                    <li>Histórias longas que desviam do texto.</li>
+                                    <li>Piadas ou frases de efeito desconectadas.</li>
+                                    <li>Introduções genéricas, previsíveis ou sem paixão.</li>
+                                    <li>Promessas que o sermão não cumpre.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">💡 Exemplos Práticos de Introdução</h3>
+                            <div class="space-y-4">
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">📖 Filipenses 4:4-7 (Ansiedade)</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm">Iniciar citando dados atuais sobre ansiedade e saúde mental, conectando imediatamente com o texto bíblico e o consolo da graça de Deus.</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">🏃‍♂️ Jonas 1 (Fuga da vontade de Deus)</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm">Narrar um episódio conhecido de fuga de responsabilidade ou procrastinação, conectando a experiência comum com o drama bíblico de Jonas.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">Qual é o papel fundamental da introdução?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Entreter e divertir os ouvintes</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Conquistar atenção, contextualizar e apresentar o tema</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Demonstrar conhecimento teológico</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                title: "Divisões Principais",
+                icon: "🔢",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🔢 Módulo 10: Divisões Principais
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a construir divisões principais claras, progressivas e exegéticas, conectadas ao tema e à pergunta condutora, tornando a mensagem compreensível, lógica e memorável.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🏗️ O Que São as Divisões?</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <blockquote class="text-lg font-medium text-gray-700 dark:text-gray-300 italic mb-4">
+                                    "A divisão do sermão não é acessório, mas elemento fundamental de clareza, fidelidade ao texto e assimilação pelo ouvinte."
+                                </blockquote>
+                                <footer class="text-sm font-semibold text-orange-600 dark:text-orange-400">- Jilton Moraes</footer>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6 mb-8">
+                            <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center"><i class="fas fa-list-ol mr-3"></i> Critérios das Divisões</h4>
+                            <ul class="space-y-2 list-disc list-inside">
+                                <li><strong>Naturalidade:</strong> As divisões devem emergir do próprio texto, seguindo sua progressão.</li>
+                                <li><strong>Conexão com o Tema:</strong> Cada ponto responde à pergunta condutora e aprofunda a ideia central.</li>
+                                <li><strong>Ordem e Progresso:</strong> Seguir a ordem dos versículos para facilitar a compreensão.</li>
+                                <li><strong>Equilíbrio:</strong> Evitar pontos desproporcionais ou muitos tópicos (2 a 4 é o ideal).</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">💡 Exemplo Prático Completo</h3>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                                <div class="text-center mb-4">
+                                    <h4 class="font-bold text-lg text-gray-800 dark:text-white">📖 Filipenses 4:4-7</h4>
+                                    <p class="text-gray-600 dark:text-gray-400"><strong>Tema:</strong> "Vencendo a ansiedade pela fé"</p>
+                                    <p class="text-gray-600 dark:text-gray-400"><strong>Pergunta:</strong> "Como podemos vencer a ansiedade biblicamente?"</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
+                                        <h5 class="font-semibold text-green-700 dark:text-green-300">1. Alegrem-se no Senhor sempre (v.4-5)</h5>
+                                    </div>
+                                    <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                                        <h5 class="font-semibold text-blue-700 dark:text-blue-300">2. Apresentem seus pedidos a Deus em oração (v.6)</h5>
+                                    </div>
+                                    <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
+                                        <h5 class="font-semibold text-purple-700 dark:text-purple-300">3. Recebam a paz que excede o entendimento (v.7)</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">As divisões principais devem:</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Seguir esquemas criativos com aliterações</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Emergir naturalmente da estrutura do texto</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ser sempre exatamente três pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 11,
+                title: "Aplicação da Mensagem",
+                icon: "⚡",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            ⚡ Módulo 11: Aplicação da Mensagem
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Capacitar o aluno a fazer aplicações fiéis, pertinentes e cristocêntricas, conectando o ensino do texto à vida real dos ouvintes de forma prática, pastoral e relevante.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🎯 Da Exposição à Transformação</h3>
+                            <blockquote class="text-center text-lg italic text-gray-700 dark:text-gray-200">
+                                "Aplicação é o alvo da exposição – tudo o que o pregador faz na preparação e pregação visa tornar clara a resposta que Deus exige de nós."
+                                <footer class="text-sm font-semibold mt-2">- Bryan Chapell</footer>
+                            </blockquote>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4">📖 Fidelidade ao Texto</h4>
+                                <p class="text-blue-700 dark:text-blue-200 text-sm">Aplicar apenas o que foi claramente ensinado pelo texto.</p>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">✝️ Centralidade de Cristo</h4>
+                                <p class="text-green-700 dark:text-green-200 text-sm">A aplicação deve fluir da obra de Cristo, não do esforço humano.</p>
+                            </div>
+                            <div class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">👥 Relevância Pastoral</h4>
+                                <p class="text-purple-700 dark:text-purple-200 text-sm">A aplicação deve considerar a situação real do povo.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4">💡 Como Fazer Aplicação Efetiva</h3>
+                            <div class="space-y-4">
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-green-600 dark:text-green-400 mb-2">Seja Específico</h4>
+                                    <div class="space-y-2">
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm"><span class="text-red-500">❌</span> Evite: "Devemos orar mais"</p>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm"><span class="text-green-500">✅</span> Prefira: "Reserve 10 minutos diários para orar por seus colegas de trabalho esta semana"</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-green-600 dark:text-green-400 mb-2">Inclua Imperativos e Convites</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm">Chame à ação, à decisão, ao compromisso. Ex: "Hoje, Deus te chama a perdoar quem te feriu".</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-red-800 dark:text-red-300 mb-4">⚠️ Perigos na Aplicação</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-2">🎭</div><h4 class="font-semibold">Moralismo</h4><p class="text-xs">Esforço sem evangelho</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-2">💧</div><h4 class="font-semibold">Superficialidade</h4><p class="text-xs">Aplicações genéricas</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div class="text-3xl mb-2">😭</div><h4 class="font-semibold">Manipulação</h4><p class="text-xs">Apenas emoção</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">Uma aplicação cristocêntrica sobre perdão foca em quê?</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Na obrigação moral de perdoar.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Em confiar em Cristo, que nos perdoou primeiro, para nos dar poder para perdoar.</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Nos benefícios psicológicos do perdão.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 12,
+                title: "Conclusão do Sermão",
+                icon: "🎬",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🎬 Módulo 12: Conclusão do Sermão
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Ensinar o aluno a concluir o sermão de forma clara, envolvente e pastoral, promovendo síntese, apelo e fechamento que reforce o tema central e gere resposta à Palavra de Deus.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🏁 A Importância da Conclusão</h3>
+                            <blockquote class="text-center text-lg italic text-gray-700 dark:text-gray-200">
+                                "Uma boa conclusão faz o ouvinte sair da igreja não só lembrando do que foi dito, mas desejando viver o que ouviu."
+                                <footer class="text-sm font-semibold mt-2">- Stuart Olyott</footer>
+                            </blockquote>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center"><i class="fas fa-check-double mr-3"></i> Elementos Essenciais</h4>
+                                <ul class="space-y-2 list-disc list-inside">
+                                    <li><strong>Síntese:</strong> Recapitule os pontos principais e o tema.</li>
+                                    <li><strong>Apelo Prático:</strong> Chame a uma resposta concreta (fé, arrependimento, etc.).</li>
+                                    <li><strong>Apelo Espiritual:</strong> Aponte para a suficiência de Cristo.</li>
+                                    <li><strong>Retorno:</strong> Conecte com a ilustração ou pergunta da introdução.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-6">
+                                <h4 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-4 flex items-center"><i class="fas-fa-lightbulb mr-3"></i> Dicas Práticas</h4>
+                                <ul class="space-y-2 list-disc list-inside">
+                                    <li>Evite introduzir novas ideias.</li>
+                                    <li>Seja breve e objetivo.</li>
+                                    <li>Mantenha a paixão pastoral.</li>
+                                    <li>Use linguagem pessoal e congregacional.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-4">💬 Exemplos Práticos de Conclusão</h3>
+                            <div class="space-y-4">
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-yellow-600 dark:text-yellow-400 mb-2">📝 Recapituladora</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm italic">"Vimos hoje como Deus é fiel mesmo nos desertos da vida. Ele provê, guia e protege. Hoje, Ele chama você a confiar e a descansar em sua fidelidade. Ao sair daqui, lembre-se: o Deus que sustentou Israel é o mesmo que cuida de você."</p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-yellow-600 dark:text-yellow-400 mb-2">🔄 Retorno à Ilustração</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm italic">"Lembra do alpinista que quase desistiu ao enfrentar a tempestade? Assim como ele, muitas vezes somos tentados a largar a corda. Mas Cristo é a nossa rocha firme. Segure-se Nele."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz de Verificação</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">Uma boa conclusão deve:</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Introduzir novos pontos para ampliar o sermão</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Fazer síntese, apelo e reforçar o tema central</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Ser apenas um "amém" formal</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 13,
+                title: "Da Teoria à Prática",
+                icon: "🎓",
+                content: `
+                    <div class="module-card rounded-2xl p-8 mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                            🎓 Módulo 13: Da Teoria à Prática
+                        </h1>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-6 mb-8 rounded-r-xl">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">🎯 Objetivo Geral</h3>
+                            <p class="text-blue-700 dark:text-blue-200">Proporcionar aos alunos a experiência de elaborar, apresentar, analisar e aperfeiçoar sermões expositivos, aplicando todos os princípios estudados, num ambiente de apoio, edificação e correção fraterna.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-yellow-50 dark:from-green-900/30 dark:to-yellow-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">🏗️ Preparando um Sermão Expositivo Completo</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                    <div class="text-4xl mb-3">📖</div>
+                                    <h4 class="text-lg font-bold">Escolha da Perícope</h4>
+                                    <p class="text-sm">6 a 12 versículos, aplicando todo o método.</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                    <div class="text-4xl mb-3">📋</div>
+                                    <h4 class="text-lg font-bold">Método Padrão</h4>
+                                    <p class="text-sm">Todas as etapas: ICT, introdução, divisões, etc.</p>
+                                </div>
+                                <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                    <div class="text-4xl mb-3">📚</div>
+                                    <h4 class="text-lg font-bold">Fontes Confiáveis</h4>
+                                    <p class="text-sm">Comentários, dicionários, versões bíblicas.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700 rounded-xl p-6 mb-8">
+                            <h4 class="text-xl font-bold text-orange-800 dark:text-orange-300 mb-4 flex items-center"><i class="fas fa-clipboard-check mr-3"></i> Critérios de Avaliação</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <ul class="space-y-2 text-sm list-disc list-inside">
+                                    <li><strong>Fidelidade Exegética:</strong> O sermão respeita o sentido original?</li>
+                                    <li><strong>Cristocentricidade:</strong> Cristo foi apresentado como centro?</li>
+                                    <li><strong>Unidade e Clareza:</strong> Tema, ICT, tese e estrutura são claros?</li>
+                                </ul>
+                                <ul class="space-y-2 text-sm list-disc list-inside">
+                                    <li><strong>Contextualização:</strong> O sermão dialoga com a realidade dos ouvintes?</li>
+                                    <li><strong>Aplicação:</strong> As aplicações são práticas, específicas e pastorais?</li>
+                                    <li><strong>Linguagem e Postura:</strong> A comunicação foi eficaz e pastoral?</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 mb-8">
+                            <h3 class="text-2xl font-bold text-green-800 dark:text-green-300 mb-4 text-center">🎯 Conclusão do Curso</h3>
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                                <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+                                    Parabéns! Você completou o curso e agora tem as ferramentas para preparar e pregar sermões expositivos fiéis, cristocêntricos e transformadores.
+                                </p>
+                                <div class="flex justify-center items-center space-x-4 mt-6 text-4xl">
+                                    <span>🎓</span><span>📖</span><span>✝️</span><span>🎯</span>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-4 italic">
+                                    "Prega a palavra, insta, quer seja oportuno, quer não, corrige, repreende, exorta com toda longanimidade e doutrina." - 2 Timóteo 4:2
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="quiz-container bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6">
+                            <h3 class="text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">🧠 Quiz Final</h3>
+                            <div class="quiz-question mb-4">
+                                <p class="font-medium text-gray-800 dark:text-white mb-4">O objetivo principal deste módulo é:</p>
+                                <div class="space-y-2">
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Apenas estudar teoria homilética</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, true)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Aplicar todos os princípios na prática</span>
+                                    </div>
+                                    <div class="quiz-option border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3" onclick="selectAnswer(this, false)">
+                                        <span class="text-gray-700 dark:text-gray-300">✓ Criticar sermões de outros pregadores</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let currentModule = 1;
+        let completedModules = new Set();
+
+        function renderNavigation() {
+            const desktopNav = document.getElementById('desktop-nav');
+            const mobileNav = document.getElementById('mobile-nav');
+            
+            const navHTML = modules.map(module => `
+                <button onclick="showModule(${module.id})" 
+                        class="w-full text-left p-3 rounded-lg transition-all duration-300 flex items-center space-x-3 ${currentModule === module.id ? 'module-active text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'} shadow-sm">
+                    <span class="text-2xl">${module.icon}</span>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm">${module.title}</h3>
+                        <p class="text-xs opacity-75">Módulo ${module.id}</p>
+                    </div>
+                    <i class="fas fa-check-circle text-green-500 transition-opacity duration-300 ${completedModules.has(module.id) ? 'opacity-100' : 'opacity-0'}"></i>
+                </button>
+            `).join('');
+            
+            desktopNav.innerHTML = navHTML;
+            mobileNav.innerHTML = navHTML;
+        }
+
+        function showModule(moduleId) {
+            currentModule = moduleId;
+            const module = modules.find(m => m.id === moduleId);
+            
+            const contentDiv = document.getElementById('content');
+            contentDiv.classList.remove('fade-in');
+            
+            // Trigger reflow to restart animation
+            void contentDiv.offsetWidth; 
+
+            contentDiv.innerHTML = module.content;
+            contentDiv.classList.add('fade-in');
+            
+            renderNavigation();
+            updateProgress();
+            
+            // Close mobile menu if open
+            document.querySelector('.mobile-menu').classList.remove('open');
+            
+            // Scroll to top of main content
+            document.querySelector('main').scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const progress = (completedModules.size / modules.length) * 100;
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            if (progressText) progressText.textContent = `${Math.round(progress)}%`;
+        }
+
+        function markModuleComplete(moduleId) {
+            if (!completedModules.has(moduleId)) {
+                completedModules.add(moduleId);
+                updateProgress();
+                renderNavigation();
+            }
+        }
+
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        function selectAnswer(option, isCorrect) {
+            // Prevent re-answering
+            if (option.parentElement.querySelector('.correct, .incorrect')) {
+                return;
+            }
+            
+            // Mark the selected answer
+            if (isCorrect) {
+                option.classList.add('correct');
+                // Mark current module as complete
+                markModuleComplete(currentModule);
+            } else {
+                option.classList.add('incorrect');
+                // Show the correct answer
+                const allOptions = option.parentElement.querySelectorAll('.quiz-option');
+                allOptions.forEach(opt => {
+                    // This is a simple way to find the correct one based on its onclick attribute
+                    if(opt.getAttribute('onclick').includes('true')){
+                       setTimeout(() => opt.classList.add('correct'), 500);
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load progress from localStorage
+            const savedProgress = localStorage.getItem('completedModules');
+            if (savedProgress) {
+                completedModules = new Set(JSON.parse(savedProgress));
+            }
+
+            renderNavigation();
+            showModule(1);
+
+            // Save progress to localStorage whenever it changes
+            const observer = new MutationObserver(() => {
+                localStorage.setItem('completedModules', JSON.stringify(Array.from(completedModules)));
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+
+        // Show default welcome content
+        document.getElementById('content').innerHTML = `
+            <div class="text-center py-16">
+                <div class="text-6xl mb-8">📖</div>
+                <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">Bem-vindo ao Curso de Homilética Digital!</h1>
+                <p class="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                    Um curso completo sobre a arte e ciência da pregação bíblica, baseado nos melhores autores reformados.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div class="card-hover bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4">📚</div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">13 Módulos</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Conteúdo completo e estruturado</p>
+                    </div>
+                    <div class="card-hover bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Prática</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Quizzes e exemplos reais</p>
+                    </div>
+                    <div class="card-hover bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4">✝️</div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Cristocêntrico</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Baseado na tradição reformada</p>
+                    </div>
+                </div>
+                <button onclick="showModule(1)" class="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold text-lg hover:shadow-lg transition-all duration-300 pulse-animation">
+                    Começar o Curso 🚀
+                </button>
+            </div>
+        `;
+    </script>
+</body>
+</html>
